@@ -22,7 +22,7 @@ class AuthService {
         await _auth.signInWithEmailAndPassword(email: email, password: passwod);
     if (!reuslt.user.isEmailVerified) {
       singOut();
-      throw new Exception();
+      throw Exception();
     }
     return reuslt.user;
   }
