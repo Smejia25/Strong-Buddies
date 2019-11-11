@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1021169798906-u8a09toeg8h3flg9palva3a5797hd12b.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1021169798906-u8a09toeg8h3flg9palva3a5797hd12b</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1021169798906-8n0478vbqukpmuqml4iqg8217sqee04l.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBHBWtiVLq4zmgU5Ips2iXnvwlaesZocKE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1021169798906</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.strongBuddiesConnect</string>
+	<key>PROJECT_ID</key>
+	<string>strong-buddies-connect</string>
+	<key>STORAGE_BUCKET</key>
+	<string>strong-buddies-connect.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1021169798906:ios:86cc5a0c2de09419418343</string>
+	<key>DATABASE_URL</key>
+	<string>https://strong-buddies-connect.firebaseio.com</string>
+</dict>
+</plist>
