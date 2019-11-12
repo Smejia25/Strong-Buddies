@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strong_buddies_connect/themes/main_theme.dart';
 import 'package:strong_buddies_connect/user_info/user_info.dart';
 import 'authentication/authentication_page.dart';
+import 'registration/registration_page.dart';
 
 void main() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           initialRoute: isLoggedIn ? '/form' : '/',
           routes: {
-            '/': (context) => LoginPage(),
+            '/': (context) => RegistrationPage(),
             '/form': (context) => UserInfoPage()
           },
           theme: buildAppTheme()),
