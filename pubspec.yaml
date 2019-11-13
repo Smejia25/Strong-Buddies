@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.1
 
 environment:
-  sdk: '>=2.2.2 <3.0.0'
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -50,6 +50,8 @@ flutter:
   assets:
     - assets/images/background-login.jpg
     - assets/images/logo.png
+    - assets/images/hombregris-04.png
+    - assets/images/iconomujergris-03.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/shared/components/secndary_button.dart';
 
 class SocialNetworkLogin extends StatelessWidget {
-  final AuthService _auth = AuthService();
-
   SocialNetworkLogin({Key key}) : super(key: key);
+
+  final AuthService _auth = AuthService();
 
   void _goToHomePage(BuildContext context) {
     Navigator.pushNamed(context, '/form');
@@ -37,19 +39,14 @@ class SocialNetworkLogin extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: RaisedButton(
-              color: Theme.of(context).accentColor,
-              textColor: Theme.of(context).primaryColor,
-              onPressed: () => _loginWithGoogle(context),
-              child: Text('Google')),
+          child: SecondaryButton(
+            onPressed: () => _loginWithGoogle(context),
+            child: Text('Google'),
+          ),
         ),
-        SizedBox(
-          width: 12,
-        ),
+        SizedBox(width: 12),
         Expanded(
-          child: RaisedButton(
-            color: Theme.of(context).accentColor,
-            textColor: Theme.of(context).primaryColor,
+          child: SecondaryButton(
             onPressed: () => _loginWithFacebook(context),
             child: Text('Facebook'),
           ),

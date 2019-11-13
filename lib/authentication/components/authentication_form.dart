@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/authentication/models/user.dart';
 import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/shared/components/secndary_button.dart';
 import 'package:validate/validate.dart';
 
 import 'forgot_pass.dart';
@@ -53,6 +54,10 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     }
   }
 
+  void _changeAuthType() {
+    setState(() => _isInLogin = !_isInLogin);
+  }
+
   String _emalValidator(String value) {
     if (value.isEmpty) return 'Please, enter a valid email';
     try {
@@ -82,6 +87,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   @override
   Widget build(BuildContext context) {
     final spaceBetweenInputs = 15.0;
+    var text = Text(_isInLogin ? 'Sign Up' : 'Sign In');
     return Form(
       key: _formKey,
       child: Column(
@@ -122,14 +128,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 width: 12,
               ),
               Expanded(
-                child: RaisedButton(
-                  color: Theme.of(context).accentColor,
-                  textColor: Theme.of(context).primaryColor,
-                  onPressed: () => setState(() {
-                    _isInLogin = !_isInLogin;
-                  }),
-                  child: Text(_isInLogin ? 'Sign Up' : 'Sign In'),
-                ),
+                child: SecondaryButton(onPressed: _changeAuthType, child: text),
               ),
             ],
           ),

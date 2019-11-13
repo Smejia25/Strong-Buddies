@@ -3,24 +3,19 @@ import 'package:strong_buddies_connect/shared/components/custom_background.dart'
 import 'package:strong_buddies_connect/shared/components/secndary_button.dart';
 
 import 'components/selective_card.dart';
-import 'gender_target.dart';
 
-class RegistrationPage extends StatefulWidget {
+class GenderTargetPage extends StatefulWidget {
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  _GenderTargetPageState createState() => _GenderTargetPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _GenderTargetPageState extends State<GenderTargetPage> {
   final String user = 'Trevor';
   int _selectedGender;
 
   void _handleCardSelection(int selectedGender) {
     setState(() => _selectedGender =
         _selectedGender == selectedGender ? null : selectedGender);
-  }
-
-  void _goToNextSection() {
-    // Navigator.of(context).push(route)
   }
 
   @override
@@ -45,9 +40,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       color: Color(0xffCECECE),
                     ),
                   ),
-                  SizedBox(height: 80),
+                  SizedBox(height: 86),
                   Text(
-                    'Please, select your gender',
+                    'Which gender are you seeking?',
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xffCECECE),
@@ -77,22 +72,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     children: <Widget>[
                       Expanded(
                         child: SecondaryButton(
-                          onPressed: () {},
-                          child: Text('Cancel'),
-                        ),
+                            onPressed: () {}, child: Text('Cancel')),
                       ),
                       SizedBox(width: 12),
                       Expanded(
                         child: RaisedButton(
-                          disabledColor: Colors.grey,
-                          onPressed: _selectedGender != null
-                              ? () {
-                                  Navigator.pushNamed(
-                                      context, '/gender_target');
-                                }
-                              : null,
-                          child: Text('Next'),
-                        ),
+                            disabledColor: Colors.grey,
+                            onPressed: _selectedGender != null
+                                ? () {
+                                    Navigator.pushNamed(context, '');
+                                  }
+                                : null,
+                            child: Text('Next')),
                       ),
                     ],
                   ),

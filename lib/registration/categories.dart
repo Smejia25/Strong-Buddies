@@ -3,14 +3,14 @@ import 'package:strong_buddies_connect/shared/components/custom_background.dart'
 import 'package:strong_buddies_connect/shared/components/secndary_button.dart';
 
 import 'components/selective_card.dart';
-import 'gender_target.dart';
+import 'models/card_info.dart';
 
-class RegistrationPage extends StatefulWidget {
+class CategoriesPage extends StatefulWidget {
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  _CategoriesPageState createState() => _CategoriesPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _CategoriesPageState extends State<CategoriesPage> {
   final String user = 'Trevor';
   int _selectedGender;
 
@@ -19,9 +19,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
         _selectedGender == selectedGender ? null : selectedGender);
   }
 
-  void _goToNextSection() {
-    // Navigator.of(context).push(route)
-  }
+  List<CardInfo> _categories = [
+    CardInfo('assets/images/hombregris-04.png', 'KK'),
+    CardInfo('assets/images/hombregris-04.png', 'KK'),
+    CardInfo('assets/images/hombregris-04.png', 'KK'),
+    CardInfo('assets/images/hombregris-04.png', 'KK'),
+    CardInfo('assets/images/hombregris-04.png', 'KK'),
+    CardInfo('assets/images/hombregris-04.png', 'KK')
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -45,54 +50,48 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       color: Color(0xffCECECE),
                     ),
                   ),
-                  SizedBox(height: 80),
+                  SizedBox(height: 86),
                   Text(
-                    'Please, select your gender',
+                    'Pick the catgeories you are most interested in',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xffCECECE),
                     ),
                   ),
                   SizedBox(height: 86),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      SelectiveCard(
-                        isSelected: _selectedGender == 1,
-                        iconFile: iconFile,
-                        cardLabel: cardLabel,
-                        onPressed: () => _handleCardSelection(1),
-                      ),
-                      SizedBox(width: 20),
-                      SelectiveCard(
-                        isSelected: _selectedGender == 2,
-                        iconFile: 'assets/images/iconomujergris-03.png',
-                        onPressed: () => _handleCardSelection(2),
-                        cardLabel: 'Female',
-                      ),
-                    ],
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.8,
+                      children: _categories
+                          .map((cat) => SelectiveCard(
+                                isSelected: _selectedGender == 1,
+                                iconFile: cat.iconName,
+                                cardLabel: cat.label,
+                                onPressed: () => _handleCardSelection(1),
+                              ))
+                          .toList(),
+                    ),
                   ),
-                  Expanded(child: SizedBox()),
+                  SizedBox(height: 10),
                   Row(
                     children: <Widget>[
                       Expanded(
                         child: SecondaryButton(
-                          onPressed: () {},
-                          child: Text('Cancel'),
-                        ),
+                            onPressed: () {}, child: Text('Cancel')),
                       ),
                       SizedBox(width: 12),
                       Expanded(
                         child: RaisedButton(
-                          disabledColor: Colors.grey,
-                          onPressed: _selectedGender != null
-                              ? () {
-                                  Navigator.pushNamed(
-                                      context, '/gender_target');
-                                }
-                              : null,
-                          child: Text('Next'),
-                        ),
+                            disabledColor: Colors.grey,
+                            onPressed: _selectedGender != null
+                                ? () {
+                                    Navigator.pushNamed(context, '');
+                                  }
+                                : null,
+                            child: Text('Next')),
                       ),
                     ],
                   ),
