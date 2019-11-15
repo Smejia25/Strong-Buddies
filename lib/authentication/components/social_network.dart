@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
 
 class SocialNetworkLogin extends StatelessWidget {
-  final AuthService _auth = AuthService();
+  final AuthService auth;
 
-  SocialNetworkLogin({Key key}) : super(key: key);
+  SocialNetworkLogin({Key key, this.auth}) : super(key: key);
 
   void _goToHomePage(BuildContext context) {
     Navigator.pushNamed(context, '/form');
@@ -12,7 +12,7 @@ class SocialNetworkLogin extends StatelessWidget {
 
   void _loginWithGoogle(BuildContext context) async {
     try {
-      await _auth.loginWithGoogle();
+      await auth.loginWithGoogle();
       _goToHomePage(context);
     } catch (e) {
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -23,7 +23,7 @@ class SocialNetworkLogin extends StatelessWidget {
 
   void _loginWithFacebook(BuildContext context) async {
     try {
-      await _auth.loginWithFacebook();
+      await auth.loginWithFacebook();
       _goToHomePage(context);
     } catch (e) {
       Scaffold.of(context).showSnackBar(SnackBar(

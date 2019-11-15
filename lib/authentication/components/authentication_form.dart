@@ -8,14 +8,16 @@ import 'forgot_pass.dart';
 class AuthenticationForm extends StatefulWidget {
   const AuthenticationForm({
     Key key,
+    this.auth,
   }) : super(key: key);
+
+  final AuthService auth;
 
   @override
   _AuthenticationFormState createState() => _AuthenticationFormState();
 }
 
 class _AuthenticationFormState extends State<AuthenticationForm> {
-  final AuthService _auth = AuthService();
   final TextEditingController _passController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final userForm = User();
@@ -34,7 +36,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
 
     if (!_isInLogin) {
       try {
-        await _auth.registerUser(userForm.email, userForm.password);
+        await widget.auth.registerUser(userForm.email, userForm.password);
         Scaffold.of(context).showSnackBar(SnackBar(
             content: Text(
                 'We just sent you a verification email. Check your email')));
@@ -44,7 +46,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       }
     } else {
       try {
-        await _auth.login(userForm.email, userForm.password);
+        await widget.auth.login(userForm.email, userForm.password);
         _goToHomePage(context);
       } catch (e) {}
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -133,7 +135,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
               ),
             ],
           ),
-          if (_isInLogin) ...[ForgotPassword(auth: _auth)],
+          if (_isInLogin) ...[ForgotPassword(auth: widget.auth)],
         ],
       ),
     );
