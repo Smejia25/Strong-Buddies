@@ -19,7 +19,7 @@ class CustomBackground extends StatelessWidget {
         children: <Widget>[
           Positioned.fill(
             child: Container(
-              color: backgroundColor /* Color(0xff414042) */,
+              color: backgroundColor,
             ),
           ),
           Positioned.fill(

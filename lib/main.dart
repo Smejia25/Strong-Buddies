@@ -30,9 +30,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           initialRoute: isLoggedIn ? '/form' : '/',
           routes: {
-            '/': (context) => CategoriesPage(),
+            '/': (context) => RegistrationPage(),
             '/form': (context) => UserInfoPage(),
-            '/gender_target': (context) => GenderTargetPage()
+            '/gender_target': (context) => RegistrationPage()
           },
           theme: buildAppTheme()),
     );
