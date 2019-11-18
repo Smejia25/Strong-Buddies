@@ -9,12 +9,10 @@ class SecondaryButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return RaisedButton(
-      color: Theme.of(context).accentColor,
-      textColor: Theme.of(context).primaryColor,
-      onPressed: onPressed,
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => RaisedButton(
+        color: Theme.of(context).accentColor,
+        textColor: Theme.of(context).primaryColor,
+        onPressed: onPressed,
+        child: child,
+      );
 }

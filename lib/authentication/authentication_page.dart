@@ -10,9 +10,11 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: ExactAssetImage('assets/images/background-login.jpg'),
-                fit: BoxFit.cover)),
+          image: DecorationImage(
+            image: ExactAssetImage('assets/images/background-login.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Center(
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,

@@ -22,25 +22,29 @@ class SelectiveCard extends StatelessWidget {
         AspectRatio(
             aspectRatio: 1,
             child: Card(
+                color: Colors.white,
                 child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  onTap: onPressed,
-                  child: Container(
-                    child: Stack(children: <Widget>[
-                      Positioned.fill(child: Image.asset(iconFile)),
-                      if (isSelected) ...[
-                        Positioned(
-                          top: 5,
-                          right: 10,
-                          child: Icon(Icons.done_outline,
-                              color: Theme.of(context).primaryColor),
-                        )
-                      ]
-                    ]),
-                  )),
-            ))),
+                  color: Colors.transparent,
+                  child: InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      onTap: onPressed,
+                      child: Container(
+                        child: Stack(children: <Widget>[
+                          Positioned.fill(
+                              child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Image.asset(iconFile))),
+                          if (isSelected) ...[
+                            Positioned(
+                              top: 5,
+                              right: 10,
+                              child: Icon(Icons.done_outline,
+                                  color: Theme.of(context).primaryColor),
+                            )
+                          ]
+                        ]),
+                      )),
+                ))),
         SizedBox(height: 10),
         Text(cardLabel,
             textAlign: TextAlign.center,

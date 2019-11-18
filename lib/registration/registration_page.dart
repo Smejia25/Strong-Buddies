@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:strong_buddies_connect/registration/providers/user.dart';
+
 import 'package:strong_buddies_connect/shared/components/custom_background.dart';
 import 'package:strong_buddies_connect/shared/components/secndary_button.dart';
 
 import 'components/selective_card.dart';
+import 'models/cardGenderINfo.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -10,71 +13,89 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  final CreateUserFactory _userService = CreateUserFactory();
   final String user = 'Trevor';
   int _selectedGender;
 
+  final List<CardGenderInfo> _genders = const [
+    CardGenderInfo('assets/images/hombregris-04.png', 'Male'),
+    CardGenderInfo('assets/images/iconomujergris-03.png', 'Female')
+  ];
+
+  List<Expanded> _getListOfGenderCards() {
+    return _genders
+        .asMap()
+        .map((i, f) {
+          return MapEntry(
+              i,
+              Expanded(
+                child: SelectiveCard(
+                  isSelected: _selectedGender == i,
+                  iconFile: f.iconFile,
+                  cardLabel: f.cardLabel,
+                  onPressed: () => _handleCardSelection(i),
+                ),
+              ));
+        })
+        .values
+        .toList();
+  }
+
   void _handleCardSelection(int selectedGender) {
+    _userService.assignGender(selectedGender == 0 ? 'Male' : 'Female');
     setState(() => _selectedGender =
         _selectedGender == selectedGender ? null : selectedGender);
   }
 
-  void _goToNextSection() {
-    // Navigator.of(context).push(route)
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: RegistrationBackground(
+        childcolumn: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            UserSalute(user: user),
+            SizedBox(height: 80),
+            LabelForSelection(label: 'Please, select your gender'),
+            SizedBox(height: 86),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _getListOfGenderCards(),
+            ),
+            Expanded(
+              child: SizedBox(),
+            ),
+            NavigationButtons(
+              canNavigationBeDone: _selectedGender != null,
+              continueBtnText: 'Next',
+              routeName: '/gender_target_form',
+            ),
+          ],
+        ),
+      ),
+    );
   }
+}
+
+class RegistrationBackground extends StatelessWidget {
+  const RegistrationBackground({
+    Key key,
+    @required this.childcolumn,
+  }) : super(key: key);
+
+  final Column childcolumn;
 
   @override
   Widget build(BuildContext context) {
-    final iconFile = 'assets/images/hombregris-04.png';
-    final cardLabel = 'Male';
-    return Scaffold(
-      body: CustomBackground(
-          backgroundColor: Color(0xff414042),
-          backgroundImage: 'assets/images/background-login.jpg',
-          child: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 23, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  UserSalute(user: user),
-                  SizedBox(height: 80),
-                  LabelForSelection(),
-                  SizedBox(height: 86),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: SelectiveCard(
-                          isSelected: _selectedGender == 1,
-                          iconFile: iconFile,
-                          cardLabel: cardLabel,
-                          onPressed: () => _handleCardSelection(1),
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: SelectiveCard(
-                          isSelected: _selectedGender == 2,
-                          iconFile: 'assets/images/iconomujergris-03.png',
-                          onPressed: () => _handleCardSelection(2),
-                          cardLabel: 'Female',
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: SizedBox(),
-                  ),
-                  NavigationButtons(
-                    canNavigationBeDone: true,
-                    continueBtnText: 'Next',
-                    routeName: '/',
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
+    return CustomBackground(
+        backgroundColor: Color(0xff414042),
+        backgroundImage: 'assets/images/background-login.jpg',
+        child: SafeArea(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 23, vertical: 5),
+            child: childcolumn,
+          ),
+        ));
   }
 }
 
@@ -97,7 +118,9 @@ class NavigationButtons extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: SecondaryButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed('/');
+            },
             child: Text('Cancel'),
           ),
         ),
@@ -117,18 +140,18 @@ class NavigationButtons extends StatelessWidget {
 }
 
 class LabelForSelection extends StatelessWidget {
-  const LabelForSelection({Key key}) : super(key: key);
+  const LabelForSelection({Key key, this.label}) : super(key: key);
+  final String label;
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Please, select your gender',
-      style: TextStyle(
-        fontSize: 20,
-        color: Color(0xffCECECE),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Text(
+        label,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 20,
+          color: Color(0xffCECECE),
+        ),
+      );
 }
 
 class UserSalute extends StatelessWidget {

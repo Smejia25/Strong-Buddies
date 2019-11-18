@@ -10,36 +10,51 @@ ThemeData buildAppTheme() {
   final secondaryColor = Color(0xffffffff);
 
   return ThemeData(
-      textTheme: textTheme(fontFamily, fontsizeButton),
-      hintColor: Color(0xff9A88AE),
-      focusColor: Color(0xff5b3c7b),
-      primaryColor: primaryColor,
-      primaryColorDark: primaryColorDark,
-      primaryColorLight: primaryColorLight,
-      accentColor: secondaryColor,
-      buttonTheme: ButtonThemeData(
-          buttonColor: primaryColor,
-          textTheme: ButtonTextTheme.accent,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5))),
-          height: 45),
-      inputDecorationTheme: InputDecorationTheme(
-        labelStyle:
-            TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.w500),
-        fillColor: secondaryColor,
-        contentPadding: EdgeInsets.only(top: 5, bottom: 10, left: 10, right: 0),
-        filled: true,
-        isDense: true,
-
-        /* border: OutlineInputBorder(<   
-            borderRadius: BorderRadius.all(Radius.circular(4))), */
-        /* enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xffC1C1C1), width: 2),
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color(0xff5b3c7b), width: 2),
-              gapPadding: 0) */
-      ));
+    textTheme: textTheme(fontFamily, fontsizeButton),
+    hintColor: /* Color(0xffaa8ec5) */ Colors.grey,
+    focusColor: Colors.green,
+    primaryColor: primaryColor,
+    primaryColorDark: primaryColorDark,
+    primaryColorLight: primaryColorLight,
+    accentColor: secondaryColor,
+    brightness: Brightness.dark,
+    buttonTheme: ButtonThemeData(
+      buttonColor: primaryColor,
+      textTheme: ButtonTextTheme.accent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(5),
+        ),
+      ),
+      height: 45,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(
+        fontSize: 18,
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.w500,
+        color: Colors.grey,
+      ),
+      contentPadding: EdgeInsets.all(15),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.grey,
+          width: 2.5,
+        ),
+        gapPadding: 7,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.grey,
+          width: 2.5,
+        ),
+        gapPadding: 7,
+      ),
+    ),
+  );
 }
 
 TextTheme textTheme(String fontFamily, double fontsizeButton) {

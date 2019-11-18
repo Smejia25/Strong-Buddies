@@ -54,8 +54,9 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     }
   }
 
-  void _changeAuthType() {
-    setState(() => _isInLogin = !_isInLogin);
+  void _changeAuthType(BuildContext context) {
+    // setState(() => _isInLogin = !_isInLogin);
+    Navigator.of(context).pushNamed('/user_name');
   }
 
   String _emalValidator(String value) {
@@ -128,7 +129,8 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 width: 12,
               ),
               Expanded(
-                child: SecondaryButton(onPressed: _changeAuthType, child: text),
+                child: SecondaryButton(
+                    onPressed: () => _changeAuthType(context), child: text),
               ),
             ],
           ),

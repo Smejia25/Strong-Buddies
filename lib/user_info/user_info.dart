@@ -28,8 +28,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           ],
           RaisedButton(
               onPressed: () async {
-                await _auth.singOut();
-                Navigator.pop(context);
+                // await _auth.singOut();
+                Navigator.of(context).pushNamed('/');
               },
               child: Text(
                 'Log Out',

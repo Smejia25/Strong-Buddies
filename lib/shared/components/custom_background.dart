@@ -17,22 +17,15 @@ class CustomBackground extends StatelessWidget {
     return Container(
       child: Stack(
         children: <Widget>[
+          Positioned.fill(child: Container(color: backgroundColor)),
           Positioned.fill(
-            child: Container(
-              color: backgroundColor,
-            ),
-          ),
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.25,
-              child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: ExactAssetImage(
-                              backgroundImage /* 'assets/images/background-login.jpg' */),
-                          fit: BoxFit.cover))),
-            ),
-          ),
+              child: Opacity(
+                  opacity: 0.25,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: ExactAssetImage(backgroundImage),
+                              fit: BoxFit.cover))))),
           Positioned.fill(child: child)
         ],
       ),

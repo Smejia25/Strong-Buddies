@@ -1,0 +1,3 @@
+class RegistrationPageI {
+  String cardsToPick;
+}
