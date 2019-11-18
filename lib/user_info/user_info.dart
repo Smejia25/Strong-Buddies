@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/registration/registration_page.dart';
 
 class UserInfoPage extends StatefulWidget {
   UserInfoPage({Key key}) : super(key: key);
@@ -11,32 +12,38 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<FirebaseUser>(context);
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: RegistrationBackground(
+          childcolumn: Column(
         children: <Widget>[
-          if (user != null) ...[
-            Text(
-              user.displayName,
-              style: TextStyle(fontSize: 50),
+          Expanded(
+              child: Container(
+            child: Align(
+              widthFactor: 1,
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                width: double.infinity,
+                height: 80,
+                child: Card(
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Lindsay, 26',
+                        style: TextStyle(color: Colors.black),
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ],
-          RaisedButton(
-              onPressed: () async {
-                // await _auth.singOut();
-                Navigator.of(context).pushNamed('/');
-              },
-              child: Text(
-                'Log Out',
-                style: TextStyle(fontSize: 50),
-              ))
+          ))
         ],
-      ),
+      )),
     );
   }
 }

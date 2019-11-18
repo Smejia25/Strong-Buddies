@@ -10,7 +10,8 @@ import 'package:strong_buddies_connect/user_info/user_info.dart';
 
 Map<String, WidgetBuilder> routes() {
   return {
-    '/': (context) => LoginPage(),
+    // '/': (context) => LoginPage(),
+    '/': (context) => UserInfoPage(),
     '/form': (context) => UserInfoPage(),
     '/user_name': (context) => UserNamePage(),
     '/gender_form': (context) => RegistrationPage(),
