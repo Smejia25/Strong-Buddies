@@ -23,10 +23,10 @@ class LoginPage extends StatelessWidget {
               children: <Widget>[
                 Image.asset('assets/images/logo.png'),
                 AuthenticationForm(),
-                SizedBox(height: 20),
+                /* SizedBox(height: 20),
                 CustomDivider(),
-                SizedBox(height: 25),
-                SocialNetworkLogin()
+                SizedBox(height: 25), */
+                // SocialNetworkLogin()
               ],
             ),
           ),

@@ -169,7 +169,7 @@ class UserSalute extends StatelessWidget {
         ArrowBack(),
         SizedBox(height: 24),
         Text(
-          'Hi, $user',
+          'Hi, buddy',
           style: TextStyle(
             fontSize: 28,
             color: Color(0xffCECECE),

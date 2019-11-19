@@ -32,8 +32,9 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       return;
     }
     _formKey.currentState.save();
+    Navigator.of(context).pushNamed('/form');
 
-    if (!_isInLogin) {
+    /*   if (!_isInLogin) {
       try {
         await _auth.registerUser(userForm.email, userForm.password);
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -51,7 +52,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(
               'User is not register in the app or the email is not verified')));
-    }
+    } */
   }
 
   void _changeAuthType(BuildContext context) {
@@ -128,10 +129,12 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
               SizedBox(
                 width: 12,
               ),
-              Expanded(
-                child: SecondaryButton(
-                    onPressed: () => _changeAuthType(context), child: text),
-              ),
+              Expanded(child: SecondaryButton(
+                child: Text('Sign Up'),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/user_name');
+                },
+              )),
             ],
           ),
           if (_isInLogin) ...[ForgotPassword(auth: _auth)],
