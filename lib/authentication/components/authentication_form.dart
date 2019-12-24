@@ -1,6 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:strong_buddies_connect/authentication/models/login.state.dart';
 import 'package:strong_buddies_connect/authentication/models/user.dart';
 import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/routes.dart';
 import 'package:validate/validate.dart';
 
 import 'forgot_pass.dart';
@@ -9,9 +15,11 @@ class AuthenticationForm extends StatefulWidget {
   const AuthenticationForm({
     Key key,
     this.auth,
+    this.isLoading$,
   }) : super(key: key);
 
   final AuthService auth;
+  final Subject<LoginStateData> isLoading$;
 
   @override
   _AuthenticationFormState createState() => _AuthenticationFormState();
@@ -19,40 +27,33 @@ class AuthenticationForm extends StatefulWidget {
 
 class _AuthenticationFormState extends State<AuthenticationForm> {
   final TextEditingController _passController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final userForm = User();
+  StreamSubscription _streamSubscription;
 
-  bool _isInLogin = true;
-
-  void _goToHomePage(BuildContext context) {
-    Navigator.pushNamed(context, '/form');
-  }
+  bool anAuthProcessIsCurrentlyBeingExecuted = false;
 
   void _doLogin() async {
     if (!_formKey.currentState.validate()) {
       return;
     }
-    _formKey.currentState.save();
 
-    if (!_isInLogin) {
-      try {
-        await widget.auth.registerUser(userForm.email, userForm.password);
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-                'We just sent you a verification email. Check your email')));
-      } catch (e) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('The email is already registered in the app')));
-      }
-    } else {
-      try {
-        await widget.auth.login(userForm.email, userForm.password);
-        _goToHomePage(context);
-      } catch (e) {}
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-              'User is not register in the app or the email is not verified')));
+    widget.isLoading$.add(LoginStateData(LoginState.Unable));
+
+    _formKey.currentState.save();
+    try {
+      await widget.auth.login(userForm.email, userForm.password);
+    } on PlatformException catch (e) {
+      widget.isLoading$
+          .add(LoginStateData(LoginState.Ready, mesage: e.message));
+    } catch (e) {
+      print(e);
     }
+  }
+
+  void _goToRegisterPage() {
+    Navigator.pushNamed(context, Routes.registerPage);
   }
 
   String _emalValidator(String value) {
@@ -65,7 +66,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     return null;
   }
 
-  String _confirmPasswordValidator(value) {
+  String _confirmPasswordValidator(String value) {
     if (value.isEmpty)
       return 'Please, enter your password';
     else if (_passController.text != value) {
@@ -82,8 +83,28 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _streamSubscription = widget.isLoading$.listen((data) {
+      if (data == null) return;
+      setState(() {
+        anAuthProcessIsCurrentlyBeingExecuted =
+            data.loginState == LoginState.Unable;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final spaceBetweenInputs = 15.0;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -104,21 +125,83 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
             validator: _passwordValidator,
             decoration: InputDecoration(labelText: 'Password'),
           ),
+          StreamBuilder<LoginStateData>(
+              stream: widget.isLoading$,
+              builder: (context, snapshot) {
+                final widgetToShow = snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data.message.isNotEmpty
+                    ? Column(
+                        children: <Widget>[
+                          SizedBox(height: spaceBetweenInputs),
+                          Text(
+                            snapshot.data.message,
+                            style: TextStyle(
+                              color: Color(0xffC11616),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                    : Center();
+                return AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  child: widgetToShow,
+                );
+              }),
           SizedBox(height: spaceBetweenInputs),
-          if (!_isInLogin) ...[
+          /* if (!_isInLogin) ...[
             TextFormField(
               obscureText: true,
               validator: _confirmPasswordValidator,
               decoration: InputDecoration(labelText: 'Confirm Password'),
             ),
             SizedBox(height: spaceBetweenInputs),
-          ],
+          ], */
+
+          /*    StreamBuilder<bool>(
+            stream: widget.isLoading$,
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (snapshot.hasData) {
+                return snapshot.data
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).primaryColor),
+                        ),
+                      )
+                    : Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: RaisedButton(
+                              onPressed: _doLogin,
+                              child: Text('Sign In'),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            child: RaisedButton(
+                              color: Theme.of(context).accentColor,
+                              textColor: Theme.of(context).primaryColor,
+                              onPressed: () => setState(() {
+                                // _isInLogin = !_isInLogin;
+                              }),
+                              child: Text('Sign Up'),
+                            ),
+                          ),
+                        ],
+                      );
+              }*/
           Row(
             children: <Widget>[
               Expanded(
                 child: RaisedButton(
-                    onPressed: _doLogin,
-                    child: Text(_isInLogin ? 'Sign In' : 'Sign Up')),
+                  onPressed:
+                      !anAuthProcessIsCurrentlyBeingExecuted ? _doLogin : null,
+                  child: Text('Sign In'),
+                ),
               ),
               SizedBox(
                 width: 12,
@@ -127,15 +210,15 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 child: RaisedButton(
                   color: Theme.of(context).accentColor,
                   textColor: Theme.of(context).primaryColor,
-                  onPressed: () => setState(() {
-                    _isInLogin = !_isInLogin;
-                  }),
-                  child: Text(_isInLogin ? 'Sign Up' : 'Sign In'),
+                  onPressed: !anAuthProcessIsCurrentlyBeingExecuted
+                      ? _goToRegisterPage
+                      : null,
+                  child: Text('Sign Up'),
                 ),
               ),
             ],
           ),
-          if (_isInLogin) ...[ForgotPassword(auth: widget.auth)],
+          ForgotPassword(auth: widget.auth),
         ],
       ),
     );

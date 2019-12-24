@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'divider_login.dart';
 
 class DividerSection extends StatelessWidget {

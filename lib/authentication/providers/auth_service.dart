@@ -20,10 +20,6 @@ class AuthService {
   Future<FirebaseUser> login(String email, String passwod) async {
     final reuslt =
         await _auth.signInWithEmailAndPassword(email: email, password: passwod);
-    if (!reuslt.user.isEmailVerified) {
-      singOut();
-      throw Exception();
-    }
     return reuslt.user;
   }
 
@@ -39,6 +35,8 @@ class AuthService {
 
   Future<FirebaseUser> loginWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return null;
+
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
@@ -56,23 +54,20 @@ class AuthService {
   Future<FirebaseUser> loginWithFacebook() async {
     final facebookLogin = FacebookLogin();
     final result = await facebookLogin.logIn(['email']);
-    final fbAuthCredential = FacebookAuthProvider.getCredential(
-        accessToken: result.accessToken.token);
-    final cosa = (await _auth.signInWithCredential(fbAuthCredential)).user;
-    print(cosa);
-    return cosa;
 
-    /* switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        _sendTokenToServer(result.accessToken.token);
-        _showLoggedInUI();
-        break;
+    switch (result.status) {
       case FacebookLoginStatus.cancelledByUser:
-        _showCancelledMessage();
+        return null;
         break;
       case FacebookLoginStatus.error:
-        _showErrorOnUI(result.errorMessage);
+        throw FormatException(result.errorMessage);
         break;
-    } */
+      default:
+        break;
+    }
+    final fbAuthCredential = FacebookAuthProvider.getCredential(
+        accessToken: result.accessToken.token);
+    final userInfo = (await _auth.signInWithCredential(fbAuthCredential)).user;
+    return userInfo;
   }
 }
