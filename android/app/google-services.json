@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1021169798906:android:d059ce0e1b9f8d77418343",
+        "mobilesdk_app_id": "1:1021169798906:android:53345625f9f1b6e4418343",
         "android_client_info": {
-          "package_name": "com.example.strong_buddies_connect"
+          "package_name": "com.strong.buddies.connect.strong_buddies_connect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1021169798906-8n0478vbqukpmuqml4iqg8217sqee04l.apps.googleusercontent.com",
+          "client_id": "1021169798906-6cfa360h63l57j0k67vk2r7v6tl9ludm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.strong_buddies_connect",
-            "certificate_hash": "53f98ddf821e7cafe94cf95b18a096703802a95d"
+            "package_name": "com.strong.buddies.connect.strong_buddies_connect",
+            "certificate_hash": "74233ccf87568a92e0c5e973e1758c3989844638"
           }
         },
         {
@@ -40,54 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1021169798906-i1qjnbr10bcdsunbf6uinefcc942jh51.apps.googleusercontent.com",
+              "client_id": "1021169798906-h4b8gl1pfbjni1dfjhqf1trpobguu227.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.strong.buddies.connect"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1021169798906:android:861d548db9482779418343",
-        "android_client_info": {
-          "package_name": "com.strong.buddies.connect"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1021169798906-8a9jf0asgib5phgt059o3tbb0sh6qkjj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.strong.buddies.connect",
-            "certificate_hash": "6b568bbaee5c9af63adc413a0bf244f2deb7cdcd"
-          }
-        },
-        {
-          "client_id": "1021169798906-mhnqmee6h75ec051bjur5sjc70qd5mef.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA0ZrjsF6djEFXb_vX2PTOC99vEB4JmGD8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1021169798906-mhnqmee6h75ec051bjur5sjc70qd5mef.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1021169798906-i1qjnbr10bcdsunbf6uinefcc942jh51.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.strong.buddies.connect"
+                "bundle_id": "com.strong.buddies.connect.id"
               }
             }
           ]

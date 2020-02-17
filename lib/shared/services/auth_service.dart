@@ -7,10 +7,10 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Observable<FirebaseUser> user;
+  Stream<FirebaseUser> user;
 
   AuthService() {
-    user = Observable(_auth.onAuthStateChanged);
+    user = _auth.onAuthStateChanged;
   }
 
   Future<void> singOut() async {
@@ -35,7 +35,7 @@ class AuthService {
 
   Future<FirebaseUser> loginWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) return null;
+    if (googleUser == null) throw Exception('');
 
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -57,7 +57,7 @@ class AuthService {
 
     switch (result.status) {
       case FacebookLoginStatus.cancelledByUser:
-        return null;
+        throw Exception('');
         break;
       case FacebookLoginStatus.error:
         throw FormatException(result.errorMessage);

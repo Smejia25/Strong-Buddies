@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:strong_buddies_connect/authentication/models/login.state.dart';
-import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/login/models/login.state.dart';
+import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import '../../routes.dart';
 
 class SocialNetworkLogin extends StatefulWidget {
   final AuthService auth;
@@ -17,15 +18,18 @@ class SocialNetworkLogin extends StatefulWidget {
 class _SocialNetworkLoginState extends State<SocialNetworkLogin> {
   bool isThereAnotherLoginInProcess = false;
 
+  void _goToNextPage() {
+    Navigator.pushNamedAndRemoveUntil(context, Routes.matchPage, (_) => false);
+  }
+
   void _loginWithGoogle(BuildContext context) async {
     widget.isLoading$.add(LoginStateData(LoginState.Unable));
     try {
       await widget.auth.loginWithGoogle();
       widget.isLoading$.add(LoginStateData(LoginState.Ready));
-    } on FormatException catch (e) {
-      _handleErrorInLogin(e.message);
+      _goToNextPage();
     } catch (e) {
-      print(e);
+      _handleErrorInLogin(e.message);
     }
   }
 
@@ -33,6 +37,8 @@ class _SocialNetworkLoginState extends State<SocialNetworkLogin> {
     if (errorMessage.isNotEmpty)
       widget.isLoading$
           .add(LoginStateData(LoginState.Ready, mesage: errorMessage));
+    else
+      widget.isLoading$.add(LoginStateData(LoginState.Ready));
   }
 
   void _loginWithFacebook(BuildContext context) async {
@@ -40,10 +46,9 @@ class _SocialNetworkLoginState extends State<SocialNetworkLogin> {
     try {
       await widget.auth.loginWithFacebook();
       widget.isLoading$.add(LoginStateData(LoginState.Ready));
-    } on FormatException catch (e) {
-      _handleErrorInLogin(e.message);
+      _goToNextPage();
     } catch (e) {
-      print(e);
+      _handleErrorInLogin(e.message);
     }
   }
 

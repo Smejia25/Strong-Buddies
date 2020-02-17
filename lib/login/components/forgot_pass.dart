@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:validate/validate.dart';
 
 class ForgotPassword extends StatelessWidget {

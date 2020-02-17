@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:strong_buddies_connect/authentication/models/login.state.dart';
-import 'package:strong_buddies_connect/authentication/models/user.dart';
-import 'package:strong_buddies_connect/authentication/providers/auth_service.dart';
+import 'package:strong_buddies_connect/login/models/login.state.dart';
+import 'package:strong_buddies_connect/login/models/user.dart';
+
 import 'package:strong_buddies_connect/routes.dart';
+import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:validate/validate.dart';
 
 import 'forgot_pass.dart';
@@ -35,15 +36,15 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   bool anAuthProcessIsCurrentlyBeingExecuted = false;
 
   void _doLogin() async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
+    if (!_formKey.currentState.validate()) return;
 
     widget.isLoading$.add(LoginStateData(LoginState.Unable));
-
     _formKey.currentState.save();
+
     try {
       await widget.auth.login(userForm.email, userForm.password);
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.matchPage, (_) => false);
     } on PlatformException catch (e) {
       widget.isLoading$
           .add(LoginStateData(LoginState.Ready, mesage: e.message));
