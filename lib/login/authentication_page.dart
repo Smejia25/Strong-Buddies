@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/location_service.dart';
 import 'components/authentication_form.dart';
 import 'components/divider_section.dart';
 import 'components/social_network.dart';

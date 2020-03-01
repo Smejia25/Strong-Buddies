@@ -61,5 +61,7 @@
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
 </dict>
 </plist>

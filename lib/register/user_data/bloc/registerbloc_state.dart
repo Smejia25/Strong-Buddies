@@ -15,8 +15,12 @@ class RegisterInProcess extends RegisterblocState {
 }
 
 class RegisterWithError extends RegisterblocState {
+  final String error;
+
+  RegisterWithError(this.error);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [error];
 }
 
 class UserCreated extends RegisterblocState {

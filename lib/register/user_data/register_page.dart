@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:validate/validate.dart';
@@ -17,6 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final user = RegisterUser();
   final _bloc = RegisterBloc();
+  ProgressDialog _pr;
 
   final workoutTimes = ['Morning', 'Midday', 'Night'];
   final gender = ['Female', 'Male', 'Other'];
@@ -49,13 +51,23 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    _pr = _pr == null ? ProgressDialog(context) : _pr;
     return Scaffold(
       body: BlocListener<RegisterBloc, RegisterblocState>(
         bloc: _bloc,
         listener: (context, state) {
-          if (state is UserCreated)
+          if (state is UserCreated) {
+            if (_pr != null && _pr.isShowing()) {
+              _pr.dismiss();
+            }
             Navigator.pushNamedAndRemoveUntil(
                 context, Routes.picturePage, (_) => false);
+          } else if (state is RegisterWithError) {
+            Scaffold.of(context).showSnackBar(
+                SnackBar(content: Text('The email is already beeing used')));
+          } else if (state is RegisterInProcess && _pr != null) {
+            _pr.show();
+          }
         },
         child: SafeArea(
           child: Container(

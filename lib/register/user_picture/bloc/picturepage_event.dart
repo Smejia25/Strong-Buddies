@@ -23,8 +23,10 @@ class SelectPicturesFromGallery extends PicturepageEvent {
 }
 
 class UploadPictures extends PicturepageEvent {
-  const UploadPictures();
+  final String userEmail;
+
+  const UploadPictures(this.userEmail);
 
   @override
-  List<Object> get props => null;
+  List<Object> get props => [userEmail];
 }

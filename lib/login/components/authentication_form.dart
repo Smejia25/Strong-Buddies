@@ -67,14 +67,14 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     return null;
   }
 
-  String _confirmPasswordValidator(String value) {
+  /* String _confirmPasswordValidator(String value) {
     if (value.isEmpty)
       return 'Please, enter your password';
     else if (_passController.text != value) {
       return 'The passwords are not the same';
     }
     return null;
-  }
+  } */
 
   String _passwordValidator(String value) {
     if (value.isEmpty)
@@ -97,7 +97,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _streamSubscription?.cancel();
     super.dispose();
   }

@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:strong_buddies_connect/register/user_picture/bloc/picturepage_bloc.dart';
 import 'package:strong_buddies_connect/routes.dart';
 
@@ -18,18 +22,35 @@ class _PicturePageState extends State<PicturePage> {
   List<File> picturesTaken = [];
 
   final _bloc = PicturepageBloc();
+  ProgressDialog _pr;
+
+  StreamSubscription<PicturepageState> _stream;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _bloc.listen((onData) {
-      print(onData);
+    _stream = _bloc.listen((state) {
+      if (state is PicturepagePictureUploaded) {
+        if (_pr != null && _pr.isShowing()) _pr.dismiss();
+        Navigator.pushNamedAndRemoveUntil(
+            context, Routes.matchPage, (_) => false);
+      }
+      if (state is PicturepageUploadingPictures) {
+        if (_pr != null) _pr.show();
+      }
     });
   }
 
   @override
+  void dispose() {
+    _stream.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final user = Provider.of<FirebaseUser>(context);
+    _pr = ProgressDialog(context);
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -45,9 +66,7 @@ class _PicturePageState extends State<PicturePage> {
                         maxImages: 10,
                         enableCamera: true,
                       );
-                      setState(() {
-                        selectedImages = imageSelected;
-                      });
+                      _bloc.add(SelectPicturesFromGallery(imageSelected));
                     } catch (e) {
                       print(e.toString());
                     }
@@ -62,52 +81,37 @@ class _PicturePageState extends State<PicturePage> {
                       );
                       if (image == null) return;
                       _bloc.add(TakePicture(image));
-                      setState(() {
-                        picturesTaken = [...picturesTaken, image];
-                      });
                     } catch (e) {}
                   }),
-              BlocListener<PicturepageBloc, PicturepageState>(
-                  bloc: _bloc,
-                  listener: (context, state) {
-                    // TODO: implement listener
-                  }),
-              if (selectedImages.isNotEmpty) ...[
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    children: List.generate(
-                      selectedImages.length,
-                      (index) {
-                        Asset asset = selectedImages[index];
-                        return AssetThumb(
-                          asset: asset,
-                          width: 300,
-                          height: 300,
-                        );
-                      },
+              BlocBuilder<PicturepageBloc, PicturepageState>(
+                bloc: _bloc,
+                builder: (context, state) {
+                  return Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      children: [
+                        ...state.picturesTaken
+                            .map((picture) => Image.file(picture))
+                            .toList(),
+                        ...state.selectedImages
+                            .map((selectedImage) => AssetThumb(
+                                  quality: 100,
+                                  asset: selectedImage,
+                                  height: 1000,
+                                  width: 1000,
+                                ))
+                            .toList()
+                      ],
                     ),
-                  ),
-                )
-              ],
-              if (picturesTaken.isNotEmpty) ...[
-                Expanded(
-                  child: ListView(
-                    children: picturesTaken.map(
-                      (picture) {
-                        print(picture);
-                        return Image.file(picture);
-                      },
-                    ).toList(),
-                  ),
-                )
-              ],
-              RaisedButton(
-                child: Text('Finish process'),
-                onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, Routes.loginPage, (_) => false);
+                  );
                 },
+              ),
+              RaisedButton(
+                child: Container(
+                  child: Text('Finish process', textAlign: TextAlign.center),
+                  width: double.infinity,
+                ),
+                onPressed: () => _bloc.add(UploadPictures(user.email)),
               )
             ],
           ),

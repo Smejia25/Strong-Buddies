@@ -5,7 +5,7 @@ class UserCollection {
   final Firestore _firestoreInstance = Firestore.instance;
   final String _collection = 'users';
 
-  Future<void> getUserInfo(RegisterUser user) {
+  Future<void> setUserInfo(RegisterUser user) {
     return _firestoreInstance
         .collection(_collection)
         .document(user.email)
@@ -18,5 +18,20 @@ class UserCollection {
       'targetGender': user.targetGender,
       'workoutType': user.workoutType,
     });
+  }
+
+  Future<DocumentSnapshot> getUser(String email) {
+    return _firestoreInstance.collection(_collection).document(email).get();
+  }
+
+  Future<void> updateUserPictures(String userEmail, List<String> pictures) {
+    return _firestoreInstance
+        .collection(_collection)
+        .document(userEmail)
+        .setData({'pictures': pictures}, merge: true);
+  }
+
+  Future<QuerySnapshot> getBuddies() {
+    return _firestoreInstance.collection(_collection).getDocuments();
   }
 }
