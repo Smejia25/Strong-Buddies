@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        initialRoute: startPage,
+        initialRoute: Routes.loginPage,
         routes: {
           Routes.loginPage: (context) => LoginPage(),
           Routes.matchPage: (context) => UserInfoPage(),
