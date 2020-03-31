@@ -18,9 +18,9 @@ class AuthService {
     return _auth.signInWithEmailAndPassword(email: email, password: passwod);
   }
 
-  Future<AuthResult> registerUser(String email, String passwod) {
+  Future<AuthResult> registerUser(String email, String password) {
     return _auth.createUserWithEmailAndPassword(
-        email: email, password: passwod);
+        email: email, password: password);
   }
 
   Future<void> forgetPassword(String email) {

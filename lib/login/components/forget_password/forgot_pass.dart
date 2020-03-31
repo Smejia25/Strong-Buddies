@@ -61,10 +61,11 @@ class ForgotPassword extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             TextFormField(
-                enabled: !isProcessLoaging,
-                validator: _emailValidator,
-                controller: _textFieldController,
-                decoration: InputDecoration(labelText: "Enter your email")),
+              enabled: !isProcessLoaging,
+              validator: _emailValidator,
+              controller: _textFieldController,
+              decoration: InputDecoration(labelText: "Enter your email"),
+            ),
             SizedBox(height: 10),
             if (error != null && error.isNotEmpty)
               Text(
@@ -102,7 +103,7 @@ class ForgotPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var container = Container(
+    return Container(
       margin: EdgeInsets.only(top: 5),
       child: Material(
         color: Colors.transparent,
@@ -111,15 +112,17 @@ class ForgotPassword extends StatelessWidget {
           onTap: () => _showForgetPassDialog(context),
           child: const Padding(
             padding: EdgeInsets.all(10),
-            child: const Text('Forgot the password?',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500)),
+            child: const Text(
+              'Forgot the password?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ),
       ),
     );
-    return container;
   }
 }

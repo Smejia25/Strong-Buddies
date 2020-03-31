@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:strong_buddies_connect/register/user_data/register_page.dart';
+import 'package:strong_buddies_connect/register/pages/register/register_page.dart';
+
 import 'package:strong_buddies_connect/register/user_picture/picture_page.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
@@ -27,22 +26,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        StreamProvider<FirebaseUser>.value(
-          value: FirebaseAuth.instance.onAuthStateChanged,
-        )
-      ],
-      child: MaterialApp(
-        initialRoute: Routes.loginPage,
+    return MaterialApp(
+        initialRoute: Routes.registerPage,
         routes: {
           Routes.loginPage: (context) => LoginPage(),
           Routes.matchPage: (context) => UserInfoPage(),
           Routes.registerPage: (context) => RegisterPage(),
           Routes.picturePage: (context) => PicturePage()
         },
-        theme: buildAppTheme(),
-      ),
-    );
+        theme: buildAppTheme());
   }
 }

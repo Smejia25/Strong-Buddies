@@ -24,13 +24,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   final _formKey = GlobalKey<FormState>();
   final _userForm = User();
 
-  void _doLogin() async {
-    if (!_formKey.currentState.validate()) return;
-
-    _formKey.currentState.save();
-    _bloc.add(PerformLoginWithCredentials(_userForm.email, _userForm.password));
-  }
-
   String _emalValidator(String value) {
     if (value.isEmpty) return 'Please, enter a valid email';
     try {
@@ -100,7 +93,12 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                     Expanded(
                       child: RaisedButton(
                         onPressed: FormUtil.getFunctionDependingOnEnableState(
-                            anAuthProcessIsCurrentlyBeingExecuted, _doLogin),
+                            anAuthProcessIsCurrentlyBeingExecuted, () {
+                          if (!_formKey.currentState.validate()) return;
+                          _formKey.currentState.save();
+                          _bloc.add(PerformLoginWithCredentials(
+                              _userForm.email, _userForm.password));
+                        }),
                         child: const Text('Sign In'),
                       ),
                     ),

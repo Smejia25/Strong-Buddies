@@ -38,6 +38,7 @@ flutter:
   assets:
     - assets/images/background-login.jpg
     - assets/images/logo.png
+    - assets/images/demo_image.jpg
 
   fonts:
     - family: Ubuntu
