@@ -78,16 +78,15 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 ),
                 ForgotPassword(),
                 const SizedBox(height: _spaceBetweenInputs),
-                if (state is LoginWithError) ...[
+                if (state is LoginWithError &&
+                    state.error != null &&
+                    state.error.isNotEmpty)
                   Text(
                     state.error,
-                    style: TextStyle(
-                      color: Color(0xffC11616),
-                    ),
+                    style: const TextStyle(color: Color(0xffC11616)),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: _spaceBetweenInputs)
-                ],
+                const SizedBox(height: _spaceBetweenInputs),
                 Row(
                   children: <Widget>[
                     Expanded(

@@ -23,6 +23,10 @@ class LoginWithError extends LoginState {
 }
 
 class SuccesfulLogin extends LoginState {
+  final bool wasUserInfoFound;
+
+  const SuccesfulLogin(this.wasUserInfoFound);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [wasUserInfoFound];
 }
