@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:strong_buddies_connect/matching/bloc/matching_bloc.dart';
-
+import 'package:strong_buddies_connect/chat/chat.dart';
 class UserInfoPage extends StatefulWidget {
   UserInfoPage({Key key}) : super(key: key);
 
@@ -81,7 +81,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 RaisedButton(
                   onPressed: () {
-                    _bloc.add(MatchWithBuddy());
+                   // _bloc.add(MatchWithBuddy());
+                    Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Chat(
+                           peerId: 'hy0XCc0k5vXZ7qkzNgRVEdFjDH82',
+                          peerAvatar: '/photourl',
+                        )));
                   },
                   child: Text("Match"),
                 )
