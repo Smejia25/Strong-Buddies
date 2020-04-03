@@ -7,6 +7,8 @@ import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/location_service.dart';
 import 'package:strong_buddies_connect/themes/main_theme.dart';
 import 'package:strong_buddies_connect/login/authentication_page.dart';
+import 'package:strong_buddies_connect/chatList/chatList.dart';
+
 import 'matching/matching_page.dart';
 
 void main() async {
@@ -39,7 +41,8 @@ class MyApp extends StatelessWidget {
           Routes.loginPage: (context) => LoginPage(),
           Routes.matchPage: (context) => UserInfoPage(),
           Routes.registerPage: (context) => RegisterPage(),
-          Routes.picturePage: (context) => PicturePage()
+          Routes.picturePage: (context) => PicturePage(),
+          Routes.chatListPage: (context) => ChatList()
         },
         theme: buildAppTheme());
   }

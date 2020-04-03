@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:strong_buddies_connect/matching/bloc/matching_bloc.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
+import 'package:strong_buddies_connect/routes.dart';
+
 class UserInfoPage extends StatefulWidget {
   UserInfoPage({Key key}) : super(key: key);
 
@@ -81,14 +83,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 RaisedButton(
                   onPressed: () {
-                   // _bloc.add(MatchWithBuddy());
-                    Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Chat(
-                           peerId: 'hy0XCc0k5vXZ7qkzNgRVEdFjDH82',
-                          peerAvatar: '/photourl',
-                        )));
+                    // _bloc.add(MatchWithBuddy());
+                    Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        // state.wasUserInfoFound ? Routes.matchPage : Routes.registerPage,
+                        Routes.chatListPage,
+                        (_) => false);
                   },
                   child: Text("Match"),
                 )
