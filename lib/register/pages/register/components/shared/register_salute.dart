@@ -21,12 +21,14 @@ class Salute extends StatelessWidget {
         if (state is RegisterDataUpdated)
           userName =
               stringIsNullOrEmpty(state.user.name) ? userName : state.user.name;
-        return Text('Hi, $userName',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 30,
-                color: Theme.of(context).accentColor,
-                fontWeight: FontWeight.w400));
+        return Text(
+          'Hi, $userName',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 24,
+              color: Color(0xFFCECECE),
+              fontWeight: FontWeight.w400),
+        );
       },
     );
   }

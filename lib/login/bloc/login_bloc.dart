@@ -27,14 +27,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       yield PerformingLoading();
       final userResult = await loginPromise;
-      yield SuccesfulLogin(await _doesTheAppHaveInfoOnThisUser(userResult));
+      final wasUserFound = await userRespository
+          .doesTheUserExistInTheDataBase(userResult.user.email);
+      yield SuccesfulLogin(wasUserFound);
     } catch (e) {
       yield (LoginWithError(_getErrorToShow(e)));
     }
   }
-
-  Future<bool> _doesTheAppHaveInfoOnThisUser(AuthResult userResult) async =>
-      (await userRespository.getUser(userResult.user.email)) != null;
 
   String _getErrorToShow(Exception error) {
     return error is PlatformException ? error.message : error.toString();

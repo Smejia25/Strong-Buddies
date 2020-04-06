@@ -14,9 +14,9 @@ class ExplainInput extends StatelessWidget {
       reason,
       textAlign: TextAlign.center,
       style: TextStyle(
-          fontSize: 20,
-          color: Theme.of(context).accentColor,
-          fontWeight: FontWeight.w400),
+        fontSize: 16,
+        color: Color(0xffcecece),
+      ),
     );
   }
 }

@@ -17,7 +17,7 @@ class RegisterTargetGender extends StatefulWidget {
 class _RegisterTargetGenderState extends State<RegisterTargetGender> {
   final _genders = ['Woman', 'Man', 'Other'];
   final _user = User();
-  List<String> _selectedGenders = [];
+  List<String> _selectedGenders = ['Woman', 'Man', 'Other'];
 
   @override
   void initState() {
@@ -43,8 +43,8 @@ class _RegisterTargetGenderState extends State<RegisterTargetGender> {
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      reason:
-          "Let us know in what gender are you intereseted in being matched with",
+      labelForInput:
+          "Please, select what genders you want to be match with",
       child: Container(
         height: 310,
         child: GridView.count(
@@ -57,7 +57,7 @@ class _RegisterTargetGenderState extends State<RegisterTargetGender> {
                   handleTargetCardSelection(isSelected, value, index),
               child: RegisterCard(
                 imageAsset: 'assets/images/demo_image.jpg',
-                workoutTimeText: value,
+                label: value,
               ),
             ),
           ),

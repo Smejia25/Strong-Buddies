@@ -22,7 +22,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
 
   LoginBloc _bloc;
   final _formKey = GlobalKey<FormState>();
-  final _userForm = User();
+  final _credentials = LoginCredential();
 
   String _emalValidator(String value) {
     if (value.isEmpty) return 'Please, enter a valid email';
@@ -39,6 +39,19 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
       return 'Please, enter your password';
     else if (value.length < 5) return 'The password is too short';
     return null;
+  }
+
+  bool _shouldErrorBeShown(LoginState state) {
+    return state is LoginWithError &&
+        state.error != null &&
+        state.error.isNotEmpty;
+  }
+
+  void _loginWithCredentials() {
+    if (!_formKey.currentState.validate()) return;
+
+    _formKey.currentState.save();
+    _bloc.add(PerformLoginWithCredentials(_credentials.email, _credentials.password));
   }
 
   @override
@@ -63,7 +76,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
               children: <Widget>[
                 TextFormField(
                   enabled: !anAuthProcessIsCurrentlyBeingExecuted,
-                  onSaved: (val) => _userForm.email = val,
+                  onSaved: (val) => _credentials.email = val,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(labelText: 'Email'),
                   validator: _emalValidator,
@@ -71,16 +84,14 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                 const SizedBox(height: _spaceBetweenInputs),
                 TextFormField(
                   enabled: !anAuthProcessIsCurrentlyBeingExecuted,
-                  onSaved: (val) => _userForm.password = val,
+                  onSaved: (val) => _credentials.password = val,
                   obscureText: true,
                   validator: _passwordValidator,
                   decoration: InputDecoration(labelText: 'Password'),
                 ),
                 ForgotPassword(),
                 const SizedBox(height: _spaceBetweenInputs),
-                if (state is LoginWithError &&
-                    state.error != null &&
-                    state.error.isNotEmpty)
+                if (_shouldErrorBeShown(state))
                   Text(
                     state.error,
                     style: const TextStyle(color: Color(0xffC11616)),
@@ -92,12 +103,8 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                     Expanded(
                       child: RaisedButton(
                         onPressed: FormUtil.getFunctionDependingOnEnableState(
-                            anAuthProcessIsCurrentlyBeingExecuted, () {
-                          if (!_formKey.currentState.validate()) return;
-                          _formKey.currentState.save();
-                          _bloc.add(PerformLoginWithCredentials(
-                              _userForm.email, _userForm.password));
-                        }),
+                            anAuthProcessIsCurrentlyBeingExecuted,
+                            _loginWithCredentials),
                         child: const Text('Sign In'),
                       ),
                     ),

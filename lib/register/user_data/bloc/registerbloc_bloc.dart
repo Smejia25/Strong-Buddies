@@ -21,7 +21,7 @@ class RegisterBloc extends Bloc<RegisterblocEvent, RegisterblocState> {
       yield RegisterInProcess();
       try {
         await _auth.registerUser(event.user.email, event.user.password);
-        await _userCollection.setUserInfo(event.user);
+        // await _userCollection.setUserInfo(event.user);
         yield UserCreated();
       } catch (e) {
         print(e.toString());

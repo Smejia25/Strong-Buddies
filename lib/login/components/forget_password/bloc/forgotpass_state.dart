@@ -5,11 +5,15 @@ abstract class ForgotpassState extends Equatable {
 }
 
 class ForgotpassInitial extends ForgotpassState {
+  const ForgotpassInitial();
+
   @override
   List<Object> get props => [];
 }
 
 class ForgotpassInProcess extends ForgotpassState {
+  const ForgotpassInProcess();
+
   @override
   List<Object> get props => [];
 }
@@ -24,6 +28,8 @@ class ForgotpassWithError extends ForgotpassState {
 }
 
 class ForgotpassProcessFinished extends ForgotpassState {
+  const ForgotpassProcessFinished();
+
   @override
   List<Object> get props => [];
 }

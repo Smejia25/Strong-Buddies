@@ -5,11 +5,15 @@ abstract class LoginState extends Equatable {
 }
 
 class LoginInitial extends LoginState {
+  const LoginInitial();
+
   @override
   List<Object> get props => [];
 }
 
 class PerformingLoading extends LoginState {
+  const PerformingLoading();
+
   @override
   List<Object> get props => [];
 }
@@ -17,7 +21,8 @@ class PerformingLoading extends LoginState {
 class LoginWithError extends LoginState {
   final String error;
 
-  LoginWithError(this.error);
+  const LoginWithError(this.error);
+
   @override
   List<Object> get props => [error];
 }

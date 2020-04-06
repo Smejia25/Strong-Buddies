@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/shared/components/tappable_wrapper.dart';
 
 class SelectionCard extends StatefulWidget {
   const SelectionCard({
@@ -45,16 +44,14 @@ class _SelectionCardState extends State<SelectionCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Container(
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(child: widget.child),
-            Positioned(
-                top: 12,
-                right: 15,
-                child: getWidgetBasedOnWhichConstructerWasUsed())
-          ],
-        ),
+      child: Stack(
+        children: <Widget>[
+          Positioned(child: widget.child),
+          Positioned(
+              top: 12,
+              right: 15,
+              child: getWidgetBasedOnWhichConstructerWasUsed())
+        ],
       ),
       onTap: handleTap,
     );

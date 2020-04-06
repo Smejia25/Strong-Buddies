@@ -2,16 +2,48 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class RegisterCard extends StatelessWidget {
-  final String workoutTimeText;
+  final String label;
   final String imageAsset;
 
   const RegisterCard({
     Key key,
-    @required this.workoutTimeText,
+    @required this.label,
     @required this.imageAsset,
   }) : super(key: key);
 
   @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 10,
+      color: Colors.white,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: FractionallySizedBox(
+                  widthFactor: 0.60,
+                  child: Image.asset(imageAsset),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  label,
+                  style: TextStyle(color: Colors.black87),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /* @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -40,7 +72,7 @@ class RegisterCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
-                      workoutTimeText,
+                      label,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -56,5 +88,5 @@ class RegisterCard extends StatelessWidget {
         ),
       ),
     );
-  }
+  } */
 }

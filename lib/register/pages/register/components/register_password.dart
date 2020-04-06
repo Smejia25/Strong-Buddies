@@ -18,21 +18,19 @@ class _RegisterPasswordState extends State<RegisterPassword> {
   @override
   void initState() {
     super.initState();
-    getCurrentState(context, (currentState) {
-      setState(() => _user = currentState.user);
-    });
+    _user = getCurrentUserState(context);
+    _passController.text = _user.password;
   }
 
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      reason: "We need this password to confirm it is you",
+      labelForInput: "Please, enter a password",
       child: Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
             TextFormField(
-              initialValue: _user.password,
               controller: _passController,
               autovalidate: true,
               obscureText: true,
@@ -52,7 +50,8 @@ class _RegisterPasswordState extends State<RegisterPassword> {
               obscureText: true,
               autovalidate: true,
               onChanged: (newValue) {
-                if (!_formKey.currentState.validate()) return;
+                if (newValue.isEmpty || _passController.text != newValue)
+                  return;
                 _user.password = newValue;
                 updateUserInfo(context, _user);
               },

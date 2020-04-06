@@ -5,17 +5,21 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
+  final AuthService _auth;
+  final UserCollection _userCollection;
+
   User _userInfo = User();
   bool _userFound = false;
 
-  final AuthService _auth;
-
-  RegisterBloc(this._auth);
+  RegisterBloc(this._auth, this._userCollection) {
+    _userInfo.targetGender = ['Woman', 'Man', 'Other'];
+  }
 
   @override
   RegisterState get initialState => RegisterInitial(_userInfo, _userFound);
@@ -30,7 +34,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     } else if (event is RegisterEventCreateUser) {
       try {
         yield (RegisterInProcess(_userInfo, _userFound));
-        await _auth.registerUser(_userInfo.email, _userInfo.password);
+        if (!_userFound)
+          await _auth.registerUser(_userInfo.email, _userInfo.password);
+        await _userCollection.setUserInfo(_userInfo);
         yield (RegisterSucessful(_userInfo, _userFound));
       } catch (e) {
         yield (RegisterWithError(_userInfo, _userFound,
@@ -38,10 +44,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
     } else if (event is RegisterEventGetUserInfo) {
       final currentUser = await _auth.getCurrentUser();
-      if (currentUser == null) return;
-      _userInfo.email = currentUser.email;
-      _userInfo.name = currentUser.displayName;
-      _userFound = true;
+      if (currentUser != null) {
+        _userInfo.email = currentUser.email;
+        _userInfo.name = currentUser.displayName;
+        _userFound = true;
+      }
       yield (RegisterDataUpdated(_userInfo, _userFound));
     }
   }

@@ -47,7 +47,7 @@ class _RegisterWorkoutTypeState extends State<RegisterWorkoutType> {
   void initState() {
     super.initState();
     getCurrentState(context, (currentState) {
-      final currentSelectedGenders = currentState.user.workoutType;
+      final currentSelectedGenders = currentState.user.workoutType;      
       if (currentSelectedGenders != null)
         selectedWorkTypes = currentSelectedGenders;
     });
@@ -55,35 +55,38 @@ class _RegisterWorkoutTypeState extends State<RegisterWorkoutType> {
 
   @override
   Widget build(BuildContext context) {
-    return RegisterContainerWrapper(
-      reason: "We need this password to confirm it is you",
-      child: Expanded(
-        child: GridView.builder(
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          itemCount: workoutType.length,
-          itemBuilder: (BuildContext context, int i) {
-            final value = workoutType[i];
-            return Padding(
-              padding: const EdgeInsets.all(5),
-              child: SelectionCard(
-                initialValue: selectedWorkTypes.indexOf(value) != -1,
-                onPressed: (isSelected) {
-                  if (isSelected)
-                    selectedWorkTypes.add(value);
-                  else
-                    selectedWorkTypes.remove(value);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40),
+      child: RegisterContainerWrapper(
+        labelForInput: "We need this password to confirm it is you",
+        child: Expanded(
+          child: GridView.builder(
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemCount: workoutType.length,
+            itemBuilder: (BuildContext context, int i) {
+              final value = workoutType[i];
+              return Padding(
+                padding: const EdgeInsets.all(5),
+                child: SelectionCard(
+                  initialValue: selectedWorkTypes.indexOf(value) != -1,
+                  onPressed: (isSelected) {
+                    if (isSelected)
+                      selectedWorkTypes.add(value);
+                    else
+                      selectedWorkTypes.remove(value);
 
-                  _user.workoutType = selectedWorkTypes;
-                  updateUserInfo(context, _user);
-                },
-                child: RegisterCard(
-                  imageAsset: 'assets/images/demo_image.jpg',
-                  workoutTimeText: value,
+                    _user.workoutType = selectedWorkTypes;
+                    updateUserInfo(context, _user);
+                  },
+                  child: RegisterCard(
+                    imageAsset: 'assets/images/demo_image.jpg',
+                    label: value,
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

@@ -17,20 +17,19 @@ class _RegisterNameState extends State<RegisterName> {
   @override
   void initState() {
     super.initState();
-    getCurrentState(context, (currentState) {
-      setState(() => _user = currentState.user);
-    });
+    _user = getCurrentUserState(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      reason: "We need your name to identify you",
+      labelForInput: "Please, enter your name",
       child: Form(
         key: _formKey,
         child: TextFormField(
           initialValue: _user.name,
           autovalidate: true,
+          autofocus: true,
           onChanged: (newValue) {
             _user.name = newValue;
             updateUserInfo(context, _user);

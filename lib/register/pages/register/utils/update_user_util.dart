@@ -12,8 +12,11 @@ void getCurrentState(
     BuildContext context, void Function(RegisterDataUpdated state) callback) {
   RegisterBloc bloc = BlocProvider.of<RegisterBloc>(context);
   RegisterState currentState = bloc.state;
+  callback(currentState);
+}
 
-  if (currentState is RegisterDataUpdated) {
-    callback(currentState);
-  }
+User getCurrentUserState(BuildContext context) {
+  RegisterBloc bloc = BlocProvider.of<RegisterBloc>(context);
+  RegisterState currentState = bloc.state;
+  return currentState.user;
 }

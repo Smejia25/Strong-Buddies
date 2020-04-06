@@ -42,11 +42,13 @@ class _RegisterGenderState extends State<RegisterGender> {
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      reason: "Let us know your gender",
+      labelForInput: "Let us know your gender",
       child: Container(
-        height: 310,
+        height: 400,
         child: GridView.count(
           crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
           children: turnListToWidgetList<String>(
             workoutTimes,
             (index, value) => SelectionCard.withStreamController(
@@ -55,7 +57,7 @@ class _RegisterGenderState extends State<RegisterGender> {
               onPressed: (_) => _updateGenderInfo(index, value, context),
               child: RegisterCard(
                 imageAsset: 'assets/images/demo_image.jpg',
-                workoutTimeText: value,
+                label: value,
               ),
             ),
           ),

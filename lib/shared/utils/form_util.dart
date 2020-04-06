@@ -12,9 +12,9 @@ class FormUtil {
   }
 
   static Function getFunctionDependingOnEnableState(
-    bool isButtonDisable,
-    Function functionToBeExecuteOnTheButton,
+    bool isButtonDisabled,
+    Function onButtonTap,
   ) {
-    return isButtonDisable ? null : functionToBeExecuteOnTheButton;
+    return isButtonDisabled ? null : onButtonTap;
   }
 }

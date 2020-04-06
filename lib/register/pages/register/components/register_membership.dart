@@ -38,12 +38,11 @@ class _RegsiterGymMembershipState extends State<RegsiterGymMembership> {
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
       child: Container(
-        height: 150,
-        child: GridView.count(
-          crossAxisCount: 2,
-          children: turnListToWidgetList<String>(
-            options,
-            (index, value) => SelectionCard.withStreamController(
+          child: Row(
+        children: turnListToWidgetList<String>(
+          options,
+          (index, value) => Expanded(
+            child: SelectionCard.withStreamController(
               stream: _stream.stream,
               condition: () => _selectedOption == index,
               onPressed: (_) {
@@ -54,14 +53,14 @@ class _RegsiterGymMembershipState extends State<RegsiterGymMembership> {
                 updateUserInfo(context, _user);
               },
               child: RegisterCard(
-                imageAsset: 'assets/images/demo_image.jpg',
-                workoutTimeText: value,
+                imageAsset: 'assets/images/demo.png',
+                label: value,
               ),
             ),
           ),
         ),
-      ),
-      reason: 'Do you have a Gym Membership?',
+      )),
+      labelForInput: 'Do you have a Gym Membership?',
     );
   }
 }

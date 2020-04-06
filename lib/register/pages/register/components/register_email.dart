@@ -19,6 +19,7 @@ class _RegisterEmailState extends State<RegisterEmail> {
   @override
   void initState() {
     super.initState();
+    getCurrentUserState(context);
     getCurrentState(context, (currentState) {
       setState(() {
         _userFound = currentState.userFound;
@@ -30,12 +31,14 @@ class _RegisterEmailState extends State<RegisterEmail> {
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      reason: "We need your email to contact you",
+      labelForInput:
+          _userFound ? 'We already got your email' : 'Please, enter your emai',
       child: Form(
         key: _formKey,
         child: TextFormField(
           key: UniqueKey(),
           autovalidate: true,
+          autofocus: true,
           initialValue: _user.email,
           enabled: !_userFound,
           keyboardType: TextInputType.emailAddress,

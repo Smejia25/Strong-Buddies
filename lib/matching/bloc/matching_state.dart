@@ -10,9 +10,10 @@ class MatchingInitial extends MatchingState {
 }
 
 class BuddyLoaded extends MatchingState {
-  final Map<String, dynamic> buddy;
+  final User buddy;
+  final User currentUser;
 
-  const BuddyLoaded(this.buddy);
+  const BuddyLoaded(this.buddy, this.currentUser);
 
   @override
   List<Object> get props => [buddy];

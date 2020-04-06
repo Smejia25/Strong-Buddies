@@ -4,6 +4,8 @@ import 'package:strong_buddies_connect/login/bloc/login_bloc.dart';
 import 'package:strong_buddies_connect/shared/utils/form_util.dart';
 
 class SocialNetworkLogin extends StatelessWidget {
+  const SocialNetworkLogin();
+
   @override
   Widget build(BuildContext context) {
     final LoginBloc bloc = BlocProvider.of<LoginBloc>(context);

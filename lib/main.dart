@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/register/pages/register/register_page.dart';
-
-import 'package:strong_buddies_connect/register/user_picture/picture_page.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/location_service.dart';
+import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/themes/main_theme.dart';
 import 'package:strong_buddies_connect/login/authentication_page.dart';
+import 'register/pages/pictures/pictures_page.dart';
 import 'matching/matching_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await askToTurnOnGps();
-  final startPage = await getInitialPage();
-  runApp(MyApp(startPage));
+  final startPage = await handleInitialConfig();
+  runApp(MyApp(startPage: startPage));
+}
+
+Future<String> handleInitialConfig() async {
+  final result =
+      await Future.wait<dynamic>([askToTurnOnGps(), getInitialPage()]);
+  return result[1];
 }
 
 Future<void> askToTurnOnGps() async {
@@ -23,23 +28,32 @@ Future<void> askToTurnOnGps() async {
 
 Future<String> getInitialPage() async {
   final auth = AuthService();
+  final userRepository = UserCollection();
   final user = await auth.getCurrentUser();
-  return user == null ? Routes.loginPage : Routes.matchPage;
+
+  if (user == null)
+    return Routes.loginPage;
+  else if (!(await userRepository.doesTheUserExistInTheDataBase(user.email)))
+    return Routes.registerPage;
+  else if (!(await userRepository.doesTheUserHavePictures(user.email)))
+    return Routes.picturePage;
+  else
+    return Routes.matchPage;
 }
 
 class MyApp extends StatelessWidget {
   final String startPage;
-  const MyApp(this.startPage);
+  const MyApp({startPage: '/'}) : this.startPage = startPage;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        initialRoute: this.startPage,
+        initialRoute: this.startPage,        
         routes: {
-          Routes.loginPage: (context) => LoginPage(),
           Routes.matchPage: (context) => UserInfoPage(),
+          Routes.loginPage: (context) => LoginPage(),
           Routes.registerPage: (context) => RegisterPage(),
-          Routes.picturePage: (context) => PicturePage()
+          Routes.picturePage: (context) => PicturesPage()
         },
         theme: buildAppTheme());
   }

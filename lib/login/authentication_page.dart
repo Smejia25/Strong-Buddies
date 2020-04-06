@@ -9,15 +9,11 @@ import 'components/divider_section.dart';
 import 'components/social_network.dart';
 
 class LoginPage extends StatelessWidget {
-  final backgroundLoginImage = 'assets/images/background-login.jpg';
-  final logoImage = 'assets/images/logo.png';
-
   void _handleSuccesfulLogin(BuildContext context, LoginState state) {
     if (state is SuccesfulLogin)
       Navigator.pushNamedAndRemoveUntil(
           context,
-          // state.wasUserInfoFound ? Routes.matchPage : Routes.registerPage,
-          Routes.matchPage,
+          state.wasUserInfoFound ? Routes.matchPage : Routes.registerPage,
           (_) => false);
   }
 
@@ -26,28 +22,28 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-              image: ExactAssetImage(backgroundLoginImage), fit: BoxFit.cover),
-        ),
+            image: DecorationImage(
+          image: const ExactAssetImage('assets/images/background-login.jpg'),
+          fit: BoxFit.cover,
+        )),
         child: SafeArea(
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: BlocProvider(
-                create: (BuildContext context) => LoginBloc(
-                  AuthService(),
-                  UserCollection(),
-                ),
+                create: (BuildContext context) =>
+                    LoginBloc(AuthService(), UserCollection()),
                 child: BlocListener<LoginBloc, LoginState>(
                   listener: _handleSuccesfulLogin,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       FractionallySizedBox(
-                          widthFactor: 0.65, child: Image.asset(logoImage)),
+                          widthFactor: 0.65,
+                          child: Image.asset('assets/images/logo.png')),
                       AuthenticationForm(),
                       const DividerSection(),
-                      SocialNetworkLogin(),
+                      const SocialNetworkLogin(),
                     ],
                   ),
                 ),

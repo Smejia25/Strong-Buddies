@@ -33,7 +33,7 @@ class _RegisterWorkoutTimeState extends State<RegisterWorkoutTime> {
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      reason: "let us",
+      labelForInput: "Please, select your preffered time to workout",
       child: Container(
         height: 310,
         child: GridView.count(
@@ -46,13 +46,12 @@ class _RegisterWorkoutTimeState extends State<RegisterWorkoutTime> {
               onPressed: (_) {
                 _selectedOption = _selectedOption == index ? null : index;
                 _stream.add(null);
-
                 _user.preferTimeToWorkout = value;
                 updateUserInfo(context, _user);
               },
               child: RegisterCard(
                 imageAsset: 'assets/images/demo_image.jpg',
-                workoutTimeText: value,
+                label: value,
               ),
             ),
           ),

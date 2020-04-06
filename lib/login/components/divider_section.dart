@@ -9,10 +9,10 @@ class DividerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[
-        SizedBox(height: 20),
-        CustomDivider(),
-        SizedBox(height: 30),
+      children: const <Widget>[
+        const SizedBox(height: 20),
+        const CustomDivider(),
+        const SizedBox(height: 30),
       ],
     );
   }
