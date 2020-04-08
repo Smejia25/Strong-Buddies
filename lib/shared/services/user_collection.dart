@@ -13,9 +13,10 @@ class UserCollection {
   }
 
   Future<User> getUser(String email) async {
-    return User.fromJson(
-        (await _firestoreInstance.collection(_collection).document(email).get())
-            .data);
+    final userDocument =
+        await _firestoreInstance.collection(_collection).document(email).get();
+    if (userDocument == null || !userDocument.exists) return null;
+    return User.fromJson(userDocument.data);
   }
 
   Future<void> updateUserPictures(String userEmail, List<String> pictures) {

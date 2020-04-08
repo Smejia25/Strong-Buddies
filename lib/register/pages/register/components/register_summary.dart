@@ -59,7 +59,7 @@ class RegisterSummary extends StatelessWidget {
           data: reduceListIntoString(user.targetGender),
           dataName: "Gender to be match with"),
       CardInputSummary(
-          data: reduceListIntoString(user.workoutType), dataName: "Worktypes")
+          data: reduceListIntoString(user.workoutType), dataName: "Kind of work you're interested in")
     ];
   }
 
@@ -97,39 +97,49 @@ class CardInputSummary extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       color: Color(0xff292929),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        height: 100,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.all(10),
-                child: Image.asset('assets/images/demo.png')),
-            SizedBox(width: 10),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 5),
-                Text(
-                  '$dataName:',
-                  style: const TextStyle(fontSize: 13, color: Colors.white),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 100),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.all(10),
+                    child: Image.asset('assets/images/demo.png')),
+              ),
+              SizedBox(width: 10),
+              Flexible(
+                child: Column(
+                  // mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    const SizedBox(height: 5),
+                    Text(
+                      '$dataName:',
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      data ?? 'Empty',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.white),
+                    ),
+                    SizedBox(height: 10)
+                  ],
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  data ?? 'Empty',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Colors.white),
-                ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

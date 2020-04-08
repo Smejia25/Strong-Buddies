@@ -1,3 +1,5 @@
+import 'package:strong_buddies_connect/shared/utils/models_util.dart';
+
 class User {
   String name;
   String email;
@@ -46,10 +48,10 @@ class User {
     preferTimeToWorkout = json['preferTimeToWorkout'];
     gender = json['gender'];
     gymMembership = json['gymMembership'];
-    targetGender = json['targetGender'].cast<String>();
-    workoutType = json['workoutType'].cast<String>();
-    pictures = json['pictures'] != null ? json['pictures'].cast<String>() : [];
-    matches = json['matches'] != null ? json['matches'].cast<String>() : [];
+    targetGender = castJsonPropertyToListToList<String>(json, 'targetGender');
+    workoutType = castJsonPropertyToListToList<String>(json, 'workoutType');
+    pictures = castJsonPropertyToListToList<String>(json, 'pictures');
+    matches = castJsonPropertyToListToList<String>(json, 'matches');
   }
 
   Map<String, dynamic> toJson() {
