@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -28,13 +26,13 @@ class PicturesBloc extends Bloc<PicturesUploadPictures, PicturesState> {
     yield (PicturesUploadeInProgress());
 
     try {
-      final userEmail = (await _auth.getCurrentUser()).email;
+      final userId = (await _auth.getCurrentUser()).uid;
       final urlOfUploadedPics =
           await userStorage.uploadBatchOfImagesInAssetFormat(
-        userEmail,
+        userId,
         event.picturesSelectedFromGallery,
       );
-      await _userCollection.updateUserPictures(userEmail, urlOfUploadedPics);
+      await _userCollection.updateUserPictures(userId, urlOfUploadedPics);
       yield (PicturesUploadedSucessful());
     } catch (e) {
       yield (PicturesUploadWithError(e.toString()));

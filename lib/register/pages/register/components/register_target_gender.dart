@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/register/pages/register/components/shared/selectable_option.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
 import 'package:strong_buddies_connect/shared/utils/list_utils.dart';
-
 import 'shared/register_card.dart';
 import 'shared/register_container_wrapper.dart';
 
@@ -16,12 +15,12 @@ class RegisterTargetGender extends StatefulWidget {
 
 class _RegisterTargetGenderState extends State<RegisterTargetGender> {
   final _genders = ['Woman', 'Man', 'Other'];
-  final _user = User();
+  final _user = RegistrationUser();
   List<String> _selectedGenders = ['Woman', 'Man', 'Other'];
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
     getCurrentState(context, (currentState) {
       final currentSelectedGenders = currentState.user.targetGender;
       if (currentSelectedGenders != null) {

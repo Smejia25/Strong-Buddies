@@ -6,6 +6,7 @@ import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
+import 'components/register_display_name.dart';
 import 'components/register_email.dart';
 import 'components/register_gender.dart';
 import 'components/register_membership.dart';
@@ -23,7 +24,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _controller = PageController();
 
-  RegisterBloc _bloc;
+  RegisterBloc _bloc = RegisterBloc(AuthService(), UserCollection());
   List<Widget> _userFields = [];
   Loader loader;
 
@@ -31,7 +32,6 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     loader = Loader(context);
-    _bloc = RegisterBloc(AuthService(), UserCollection());
     _bloc.add(RegisterEventGetUserInfo());
   }
 
@@ -41,6 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
         const RegisterEmail(),
         if (!wasUserFound) const RegisterPassword(),
         const RegisterName(),
+        const DisplayName(),
         const RegisterGender(),
         const RegisterTargetGender(),
         const RegsiterGymMembership(),
@@ -57,23 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
       body: BlocProvider.value(
         value: _bloc,
         child: BlocListener<RegisterBloc, RegisterState>(
-          condition: (previous, current) =>
-              !(current is RegisterDataUpdated) || _userFields.isEmpty,
-          listener: (context, state) {
-            if (state is RegisterDataUpdated)
-              _getUserFieldsBaseOnAuthState(state.userFound);
-            else if (state is RegisterInProcess) {
-              loader.showLoader();
-            } else if (state is RegisterWithError) {
-              loader.dismissLoader();
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.error)));
-            } else if (state is RegisterSucessful) {
-              loader.dismissLoader();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.picturePage, (_) => false);
-            }
-          },
+          listener: _handleStateChange,
           child: Container(
             width: double.infinity,
             height: double.infinity,
@@ -96,12 +81,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _controller,
                     children: _userFields,
                   ),
-                ),
+                )
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _handleStateChange(context, state) {
+    if (state is RegisterInitialUserInfo)
+      _getUserFieldsBaseOnAuthState(state.userFound);
+    else if (state is RegisterInProcess) {
+      loader.showLoader();
+    } else if (state is RegisterWithError) {
+      loader.dismissLoader();
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+    } else if (state is RegisterSucessful) {
+      loader.dismissLoader();
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.picturePage, (_) => false);
+    }
   }
 }

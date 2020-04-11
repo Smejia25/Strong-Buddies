@@ -28,10 +28,10 @@ class LoginWithError extends LoginState {
 }
 
 class SuccesfulLogin extends LoginState {
-  final bool wasUserInfoFound;
+  final String routeToNavigate;
 
-  const SuccesfulLogin(this.wasUserInfoFound);
+  const SuccesfulLogin(this.routeToNavigate);
 
   @override
-  List<Object> get props => [wasUserInfoFound];
+  List<Object> get props => [routeToNavigate];
 }

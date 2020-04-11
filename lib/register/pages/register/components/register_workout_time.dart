@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
 import 'package:strong_buddies_connect/shared/utils/list_utils.dart';
 import 'shared/register_card.dart';
@@ -17,14 +17,14 @@ class RegisterWorkoutTime extends StatefulWidget {
 class _RegisterWorkoutTimeState extends State<RegisterWorkoutTime> {
   final workoutTimes = ['Morning', 'Midday', 'Night'];
   final _stream = StreamController<void>.broadcast();
-  final _user = User();
+  final _user = RegistrationUser();
   int _selectedOption;
 
   @override
   void initState() {
     super.initState();
     getCurrentState(context, (currentState) {
-      final currentWorkoutTime = currentState.user.preferTimeToWorkout;
+      final currentWorkoutTime = currentState.user.preferTimeWorkout;
       if (currentWorkoutTime == null) return;
       _selectedOption = workoutTimes.indexOf(currentWorkoutTime);
     });
@@ -46,7 +46,7 @@ class _RegisterWorkoutTimeState extends State<RegisterWorkoutTime> {
               onPressed: (_) {
                 _selectedOption = _selectedOption == index ? null : index;
                 _stream.add(null);
-                _user.preferTimeToWorkout = value;
+                _user.preferTimeWorkout = value;
                 updateUserInfo(context, _user);
               },
               child: RegisterCard(

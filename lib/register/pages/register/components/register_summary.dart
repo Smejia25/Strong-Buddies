@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/register/pages/register/bloc/register_bloc.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
-
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
+import 'package:strong_buddies_connect/shared/utils/form_util.dart';
 import 'shared/register_explain.dart';
 
 class RegisterSummary extends StatelessWidget {
@@ -15,7 +15,8 @@ class RegisterSummary extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
-          final User user = state.user;
+          final RegistrationUser user = state.user;
+          final bool wasUserFound = state.userFound;
           return Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -24,16 +25,14 @@ class RegisterSummary extends StatelessWidget {
               const ExplainInput(reason: 'Please, verify the data'),
               const SizedBox(height: 20),
               Expanded(
-                child: ListView(children: getAllUserFields(user)),
-              ),
+                  child:
+                      ListView(children: getAllUserFields(user, wasUserFound))),
               const SizedBox(height: 15),
               RaisedButton(
-                onPressed: isUserValid(user)
-                    ? () {
-                        BlocProvider.of<RegisterBloc>(context)
-                            .add(RegisterEventCreateUser());
-                      }
-                    : null,
+                onPressed: FormUtil.getFunctionDependingOnEnableState(
+                    !isUserValid(user, wasUserFound),
+                    () => BlocProvider.of<RegisterBloc>(context)
+                        .add(RegisterEventCreateUser())),
                 child: const Text('Create User'),
               )
             ],
@@ -43,23 +42,28 @@ class RegisterSummary extends StatelessWidget {
     );
   }
 
-  List<CardInputSummary> getAllUserFields(User user) {
+  List<CardInputSummary> getAllUserFields(
+      RegistrationUser user, bool wasUserFound) {
     return [
       CardInputSummary(dataName: 'Name', data: user.name),
+      CardInputSummary(dataName: 'Public Name', data: user.displayName),
       CardInputSummary(dataName: 'Email Address', data: user.email),
+      if (!wasUserFound)
+        CardInputSummary(
+            dataName: 'Password',
+            data:
+                user.password == null || user.password.isEmpty ? null : '****'),
       CardInputSummary(
-          dataName: 'Password',
-          data: user.password == null || user.password.isEmpty ? null : '****'),
-      CardInputSummary(
-          dataName: 'Prefered Workout Time', data: user.preferTimeToWorkout),
+          dataName: 'Prefered Workout Time', data: user.preferTimeWorkout),
       CardInputSummary(dataName: 'Your Gender', data: user.gender),
       CardInputSummary(
-          dataName: 'Do you have a Gym Memebership?', data: user.gymMembership),
+          dataName: 'Do you have a Gym Memebership?', data: user.gymMemberShip),
       CardInputSummary(
           data: reduceListIntoString(user.targetGender),
           dataName: "Gender to be match with"),
       CardInputSummary(
-          data: reduceListIntoString(user.workoutType), dataName: "Kind of work you're interested in")
+          data: reduceListIntoString(user.workoutTypes),
+          dataName: "Kind of work you're interested in")
     ];
   }
 
@@ -68,14 +72,16 @@ class RegisterSummary extends StatelessWidget {
     return listToReduceIntoString.join(', ');
   }
 
-  bool isUserValid(User user) {
+  bool isUserValid(RegistrationUser user, bool wasUserFound) {
     return user.name != null &&
         user.email != null &&
-        user.preferTimeToWorkout != null &&
+        user.preferTimeWorkout != null &&
         user.gender != null &&
-        user.gymMembership != null &&
+        user.gymMemberShip != null &&
         user.targetGender != null &&
-        user.workoutType != null;
+        user.workoutTypes != null &&
+        user.displayName != null &&
+        (user.password != null || wasUserFound);
   }
 }
 
@@ -93,9 +99,7 @@ class CardInputSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 15,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       color: Color(0xff292929),
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: 100),
@@ -117,7 +121,6 @@ class CardInputSummary extends StatelessWidget {
               SizedBox(width: 10),
               Flexible(
                 child: Column(
-                  // mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[

@@ -17,14 +17,12 @@ class Salute extends StatelessWidget {
           currentState.user.name != null &&
           currentState.user.name != userName,
       builder: (context, state) {
-        userName = 'buddy';
-        if (state is RegisterDataUpdated)
-          userName =
-              stringIsNullOrEmpty(state.user.name) ? userName : state.user.name;
+        userName =
+            stringIsNullOrEmpty(state.user.name) ? 'Buddy' : state.user.name;
         return Text(
           'Hi, $userName',
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 24,
               color: Color(0xFFCECECE),
               fontWeight: FontWeight.w400),

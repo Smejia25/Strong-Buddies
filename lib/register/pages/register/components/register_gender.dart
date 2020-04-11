@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/register/pages/register/components/shared/selectable_option.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
 import 'package:strong_buddies_connect/shared/utils/list_utils.dart';
-
 import 'shared/register_card.dart';
 import 'shared/register_container_wrapper.dart';
 
@@ -18,7 +17,7 @@ class RegisterGender extends StatefulWidget {
 
 class _RegisterGenderState extends State<RegisterGender> {
   final workoutTimes = ['Woman', 'Man', 'Other'];
-  final _user = User();
+  final _user = RegistrationUser();
   final _stream = StreamController<void>.broadcast();
   int _selectedOption;
 

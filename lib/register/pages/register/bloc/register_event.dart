@@ -12,7 +12,7 @@ class RegisterEventGetUserInfo extends RegisterEvent {
 }
 
 class RegisterEventUpdateUserData extends RegisterEvent {
-  final User user;
+  final RegistrationUser user;
 
   const RegisterEventUpdateUserData(this.user);
 

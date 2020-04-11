@@ -28,7 +28,7 @@ class UserStorage {
   }
 
   Future<List<String>> uploadBatchOfImagesInAssetFormat(
-      String userEmail, List<Asset> images) async {
+      String userId, List<Asset> images) async {
     final List<String> futures = [];
 
     for (var image in images) {
@@ -37,7 +37,7 @@ class UserStorage {
 
       final pictureId = Uuid().v4();
       final StorageReference storageReference =
-          userPicturesReferences.child("$userEmail/$pictureId.jpg");
+          userPicturesReferences.child("$userId/$pictureId.jpg");
 
       StorageUploadTask uploadTask = storageReference.putData(imageData);
       await uploadTask.onComplete;

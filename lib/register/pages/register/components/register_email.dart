@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
 import 'package:strong_buddies_connect/shared/utils/form_util.dart';
 import 'shared/register_container_wrapper.dart';
@@ -12,18 +12,17 @@ class RegisterEmail extends StatefulWidget {
 }
 
 class _RegisterEmailState extends State<RegisterEmail> {
+  final RegistrationUser _user = RegistrationUser();
   final _formKey = GlobalKey<FormState>();
   bool _userFound = false;
-  User _user = User();
 
   @override
   void initState() {
     super.initState();
-    getCurrentUserState(context);
     getCurrentState(context, (currentState) {
       setState(() {
         _userFound = currentState.userFound;
-        _user = currentState.user;
+        _user.email = currentState.user.email;
       });
     });
   }

@@ -52,10 +52,7 @@ class _PicturesPageState extends State<PicturesPage> {
             listener: _handleStateChange,
             child: Column(
               children: <Widget>[
-                SizedBox(
-                  height: 150,
-                  child: getProfilePicture(),
-                ),
+                SizedBox(height: 150, child: getProfilePicture()),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(

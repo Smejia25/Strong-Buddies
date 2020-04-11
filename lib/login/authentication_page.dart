@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/login/bloc/login_bloc.dart';
-import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'components/authentication_form.dart';
@@ -12,9 +11,7 @@ class LoginPage extends StatelessWidget {
   void _handleSuccesfulLogin(BuildContext context, LoginState state) {
     if (state is SuccesfulLogin)
       Navigator.pushNamedAndRemoveUntil(
-          context,
-          state.wasUserInfoFound ? Routes.matchPage : Routes.registerPage,
-          (_) => false);
+          context, state.routeToNavigate, (_) => false);
   }
 
   @override

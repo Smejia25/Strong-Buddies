@@ -8,6 +8,7 @@ import 'package:strong_buddies_connect/themes/main_theme.dart';
 import 'package:strong_buddies_connect/login/authentication_page.dart';
 import 'register/pages/pictures/pictures_page.dart';
 import 'matching/matching_page.dart';
+import 'shared/utils/navigation_util.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,15 +31,10 @@ Future<String> getInitialPage() async {
   final auth = AuthService();
   final userRepository = UserCollection();
   final user = await auth.getCurrentUser();
+  if (user == null) return Routes.loginPage;
+  final userInfo = await userRepository.getCurrentUserInfo(user.uid);
 
-  if (user == null)
-    return Routes.loginPage;
-  else if (!(await userRepository.doesTheUserExistInTheDataBase(user.email)))
-    return Routes.registerPage;
-  else if (!(await userRepository.doesTheUserHavePictures(user.email)))
-    return Routes.picturePage;
-  else
-    return Routes.matchPage;
+  return getNavigationRouteBasedOnUserState(userInfo);
 }
 
 class MyApp extends StatelessWidget {
@@ -48,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        initialRoute: this.startPage,        
+        initialRoute: this.startPage,
         routes: {
           Routes.matchPage: (context) => UserInfoPage(),
           Routes.loginPage: (context) => LoginPage(),

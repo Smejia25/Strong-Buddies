@@ -3,45 +3,38 @@ import 'package:strong_buddies_connect/register/pages/register/utils/update_user
 import 'package:flutter/material.dart';
 import 'shared/register_container_wrapper.dart';
 
-class RegisterName extends StatefulWidget {
-  const RegisterName({Key key}) : super(key: key);
+class DisplayName extends StatefulWidget {
+  const DisplayName({Key key}) : super(key: key);
 
   @override
-  _RegisterNameState createState() => _RegisterNameState();
+  _DisplayNameState createState() => _DisplayNameState();
 }
 
-class _RegisterNameState extends State<RegisterName> {
+class _DisplayNameState extends State<DisplayName> {
   final _user = RegistrationUser();
   final _formKey = GlobalKey<FormState>();
-  bool _userFound = false;
 
   @override
   void initState() {
     super.initState();
-    getCurrentState(context, (currentState) {
-      setState(() {
-        _userFound = currentState.userFound;
-        _user.name = currentState.user.name;
-      });
-    });
-    _user.name = getCurrentUserState(context).name;
+    _user.displayName = getCurrentUserState(context).displayName;
   }
 
   @override
   Widget build(BuildContext context) {
     return RegisterContainerWrapper(
-      labelForInput: 'Please, enter your name',
+      labelForInput: "Please, enter your public name",
       child: Form(
         key: _formKey,
         child: TextFormField(
-          initialValue: _user.name,
+          initialValue: _user.displayName,
           autovalidate: true,
           autofocus: true,
           onChanged: (newValue) {
-            _user.name = newValue;
+            _user.displayName = newValue;
             updateUserInfo(context, _user);
           },
-          decoration: InputDecoration(labelText: 'Name'),
+          decoration: InputDecoration(labelText: 'Public Name'),
           validator: (String value) {
             if (value.isEmpty) {
               return 'Please, enter your name';

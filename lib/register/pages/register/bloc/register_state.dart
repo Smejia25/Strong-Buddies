@@ -1,7 +1,7 @@
 part of 'register_bloc.dart';
 
 abstract class RegisterState extends Equatable {
-  final User user;
+  final RegistrationUser user;
   final bool userFound;
   const RegisterState(this.user, this.userFound);
 
@@ -9,26 +9,42 @@ abstract class RegisterState extends Equatable {
 }
 
 class RegisterInitial extends RegisterState {
-  const RegisterInitial(User user, bool userFound) : super(user, userFound);
+  const RegisterInitial(RegistrationUser user, bool userFound)
+      : super(user, userFound);
+}
+
+class RegisterInitialUserInfo extends RegisterState {
+  const RegisterInitialUserInfo(RegistrationUser user, bool userFound)
+      : super(user, userFound);
 }
 
 class RegisterInProcess extends RegisterState {
-  const RegisterInProcess(User user, bool userFound) : super(user, userFound);
+  const RegisterInProcess(RegistrationUser user, bool userFound)
+      : super(user, userFound);
 }
 
 class RegisterDataUpdated extends RegisterState {
-  const RegisterDataUpdated(User user, bool userFound) : super(user, userFound);
+  const RegisterDataUpdated(
+    RegistrationUser user,
+    bool userFound,
+  ) : super(user, userFound);
 }
 
 class RegisterWithError extends RegisterState {
   final String error;
 
-  const RegisterWithError(User user, bool userFound, this.error)
-      : super(user, userFound);
+  const RegisterWithError(
+    RegistrationUser user,
+    bool userFound,
+    this.error,
+  ) : super(user, userFound);
 
   List<Object> get props => [user, userFound, error];
 }
 
 class RegisterSucessful extends RegisterState {
-  const RegisterSucessful(User user, bool userFound) : super(user, userFound);
+  const RegisterSucessful(
+    RegistrationUser user,
+    bool userFound,
+  ) : super(user, userFound);
 }

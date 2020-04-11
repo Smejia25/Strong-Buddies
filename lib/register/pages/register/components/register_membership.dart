@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/register/pages/register/components/shared/register_container_wrapper.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
 import 'package:strong_buddies_connect/shared/utils/list_utils.dart';
 
@@ -21,14 +21,14 @@ class RegsiterGymMembership extends StatefulWidget {
 class _RegsiterGymMembershipState extends State<RegsiterGymMembership> {
   final options = ['Yes', 'No'];
   final _stream = StreamController<void>.broadcast();
-  final _user = User();
+  final _user = RegistrationUser();
   int _selectedOption;
 
   @override
   void initState() {
     super.initState();
     getCurrentState(context, (currentState) {
-      final currentMembership = currentState.user.gymMembership;
+      final currentMembership = currentState.user.gymMemberShip;
       if (currentMembership == null) return;
       _selectedOption = options.indexOf(currentMembership);
     });
@@ -49,7 +49,7 @@ class _RegsiterGymMembershipState extends State<RegsiterGymMembership> {
                 _selectedOption = _selectedOption == index ? null : index;
                 _stream.add(_selectedOption);
 
-                _user.gymMembership = value;
+                _user.gymMemberShip = value;
                 updateUserInfo(context, _user);
               },
               child: RegisterCard(

@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/matching/bloc/matching_bloc.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/routes.dart';
+import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
+import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
@@ -20,9 +22,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
   final _controller = PageController();
   final _bloc = MatchingBloc(UserCollection(), AuthService());
   Loader _loader;
-
-  final worktypes = ['sdsds', 'sdkjshdkjshd'];
-  final worktypesOWn = ['sdkjshdkjshd'];
 
   @override
   void initState() {
@@ -57,9 +56,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   height: double.infinity,
                   child: BlocListener(
                     bloc: _bloc,
-                    listener: (previous, state) {
-                      
-                    },
+                    listener: (previous, state) {},
                     child: BlocBuilder<MatchingBloc, MatchingState>(
                       bloc: _bloc,
                       builder: (context, state) {
@@ -70,11 +67,27 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           return Container(
                             child: Center(
                               child: Card(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child:
-                                    Text("We're out of buddies at the moment"),
-                              )),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Text(
+                                        "We're out of buddies at the moment",
+                                      ),
+                                    ),
+                                    RaisedButton(
+                                      onPressed: () async {
+                                        await AuthService().singOut();
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            Routes.loginPage,
+                                            (_) => false);
+                                      },
+                                      child: Text('Sign Out'),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         return Container();
@@ -87,8 +100,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   Column buildBuddyMatch(
-    User potentialBuddyToBeMatchedWith,
-    User currentUser,
+    Buddy potentialBuddyToBeMatchedWith,
+    CurrentUser currentUser,
   ) {
     return Column(children: <Widget>[
       const SizedBox(height: 5),
@@ -122,7 +135,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      potentialBuddyToBeMatchedWith.name,
+                      potentialBuddyToBeMatchedWith.displayName,
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                     )),
@@ -134,11 +147,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: RichText(
                       text: TextSpan(
                     style: TextStyle(color: Color(0xffa7a7a7), fontSize: 15),
-                    children: potentialBuddyToBeMatchedWith.workoutType
+                    children: potentialBuddyToBeMatchedWith.workoutTypes
                         .map((workType) => TextSpan(
                             text: '$workType, ',
                             style:
-                                currentUser.workoutType.indexOf(workType) != -1
+                                currentUser.workoutTypes.indexOf(workType) != -1
                                     ? TextStyle(
                                         color: Colors.orange,
                                         fontWeight: FontWeight.w500)

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
+import 'package:strong_buddies_connect/shared/utils/navigation_util.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -27,9 +28,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       yield PerformingLoading();
       final userResult = await loginPromise;
-      final wasUserFound = await userRespository
-          .doesTheUserExistInTheDataBase(userResult.user.email);
-      yield SuccesfulLogin(wasUserFound);
+      final user =
+          await userRespository.getCurrentUserInfo(userResult.user.uid);
+      final routeToNavigateNext = getNavigationRouteBasedOnUserState(user);
+      yield SuccesfulLogin(routeToNavigateNext);
     } catch (e) {
       yield (LoginWithError(_getErrorToShow(e)));
     }

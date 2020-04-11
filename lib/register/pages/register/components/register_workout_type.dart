@@ -1,9 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
-
 import 'shared/register_card.dart';
 import 'shared/register_container_wrapper.dart';
 import 'shared/selectable_option.dart';
@@ -40,14 +37,14 @@ class _RegisterWorkoutTypeState extends State<RegisterWorkoutType> {
     "Spin Class",
     "Rowing"
   ];
-  final _user = User();
+  final _user = RegistrationUser();
   List<String> selectedWorkTypes = [];
 
   @override
   void initState() {
     super.initState();
     getCurrentState(context, (currentState) {
-      final currentSelectedGenders = currentState.user.workoutType;      
+      final currentSelectedGenders = currentState.user.workoutTypes;      
       if (currentSelectedGenders != null)
         selectedWorkTypes = currentSelectedGenders;
     });
@@ -76,7 +73,7 @@ class _RegisterWorkoutTypeState extends State<RegisterWorkoutType> {
                     else
                       selectedWorkTypes.remove(value);
 
-                    _user.workoutType = selectedWorkTypes;
+                    _user.workoutTypes = selectedWorkTypes;
                     updateUserInfo(context, _user);
                   },
                   child: RegisterCard(

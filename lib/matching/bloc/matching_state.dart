@@ -10,8 +10,8 @@ class MatchingInitial extends MatchingState {
 }
 
 class BuddyLoaded extends MatchingState {
-  final User buddy;
-  final User currentUser;
+  final Buddy buddy;
+  final CurrentUser currentUser;
 
   const BuddyLoaded(this.buddy, this.currentUser);
 

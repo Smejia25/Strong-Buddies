@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/register/pages/register/models/user_pojo.dart';
+import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
+
 import 'package:strong_buddies_connect/register/pages/register/utils/update_user_util.dart';
 import 'shared/register_container_wrapper.dart';
 
@@ -13,12 +14,12 @@ class RegisterPassword extends StatefulWidget {
 class _RegisterPasswordState extends State<RegisterPassword> {
   final _passController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  User _user = User();
+  final _user = RegistrationUser();
 
   @override
   void initState() {
     super.initState();
-    _user = getCurrentUserState(context);
+    _user.password = getCurrentUserState(context).password;
     _passController.text = _user.password;
   }
 
