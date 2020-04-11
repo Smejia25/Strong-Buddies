@@ -10,6 +10,8 @@ import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
+import 'package:strong_buddies_connect/chat/chat.dart';
+import 'package:strong_buddies_connect/routes.dart';
 
 class UserInfoPage extends StatefulWidget {
   UserInfoPage({Key key}) : super(key: key);
@@ -76,11 +78,19 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                       ),
                                     ),
                                     RaisedButton(
-                                      onPressed: () async {
+                                      onPressed:
+                                          /*  () async {
                                         await AuthService().singOut();
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             Routes.loginPage,
+                                            (_) => false);
+                                      } */
+                                          () {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            // state.wasUserInfoFound ? Routes.matchPage : Routes.registerPage,
+                                            Routes.chatListPage,
                                             (_) => false);
                                       },
                                       child: Text('Sign Out'),
