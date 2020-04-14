@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:strong_buddies_connect/matching/models/matched_buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 
@@ -46,18 +49,57 @@ class UserCollection {
     return Buddy.fromJson(userDocument.data);
   }
 
-  Future<void> updateUserPictures(String userId, List<String> pictures) {
-    return _firestoreInstance
-        .collection(_collection)
-        .document(userId)
-        .setData({'pictures': pictures}, merge: true);
+  Future<void> updateUserPictures(
+    String userId,
+    List<String> pictures,
+    int indexOfProfilePic,
+  ) {
+    return _firestoreInstance.collection(_collection).document(userId).setData(
+        {'pictures': pictures, 'photoUrl': pictures[indexOfProfilePic]},
+        merge: true);
   }
 
   Future<List<Buddy>> getBuddies() async {
-    /* return (await _firestoreInstance.collection(_collection).getDocuments())
+    return (await _firestoreInstance.collection(_collection).getDocuments())
         .documents
-        .map((document) => User.fromJson(document.data))
-        .toList(); */
+        .where((doc) => doc.exists)
+        .map((document) =>
+            Buddy.fromJson(document.data)..id = document.documentID)
+        .toList();
+  }
+
+  Future<List<String>> getAlreadyAnalizedBuddies(String userId) async {
+    return (await _firestoreInstance
+            .collection(_collection)
+            .document(userId)
+            .collection('analyzed_buddies')
+            .getDocuments())
+        .documents
+        .where((doc) => doc.exists)
+        .map((doc) => doc.documentID)
+        .toList();
+  }
+
+  StreamSubscription<QuerySnapshot> listenToChanges(
+    String userId,
+    void Function(List<MatchedBuddy>) callback,
+  ) {
+    bool isFisrtTime = true;
+    return _firestoreInstance
+        .collection(_collection)
+        .document(userId)
+        .collection('matches')
+        .snapshots()
+        .listen((data) {
+      if (isFisrtTime) {
+        isFisrtTime = false;
+        return;
+      }
+      callback(data.documentChanges
+          .where((d) => d.document.exists)
+          .map((x) => MatchedBuddy.fromJson(x.document.data))
+          .toList());
+    });
   }
 
   Future<bool> doesTheUserExistInTheDataBase(String email) async {
@@ -71,14 +113,15 @@ class UserCollection {
   }
 
   Future<void> setBuddyInTheRejectionList(
-    CurrentUser currentUser,
-    String rejectedBuddyEmail,
+    String currentUserId,
+    String buddyId,
+    bool wasAMatch,
   ) {
-    /* return _firestoreInstance
+    return _firestoreInstance
         .collection(_collection)
-        .document(currentUser.email)
-        .setData({
-      'matches': [...currentUser.matches, rejectedBuddyEmail]
-    }, merge: true); */
+        .document(currentUserId)
+        .collection('analyzed_buddies')
+        .document(buddyId)
+        .setData({'wasAMatch': wasAMatch}, merge: false);
   }
 }

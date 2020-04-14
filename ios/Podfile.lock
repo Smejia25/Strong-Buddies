@@ -201,6 +201,9 @@ PODS:
   - Firebase/Firestore (6.17.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 1.10.2)
+  - Firebase/Messaging (6.17.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 4.2.1)
   - Firebase/Storage (6.17.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.5.0)
@@ -212,6 +215,10 @@ PODS:
     - Firebase/Core
     - Flutter
   - firebase_core_web (0.1.0):
+    - Flutter
+  - firebase_messaging (0.0.1):
+    - Firebase/Core
+    - Firebase/Messaging
     - Flutter
   - firebase_storage (0.0.1):
     - Firebase/Storage
@@ -225,6 +232,7 @@ PODS:
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (= 0.3.9011)
+  - FirebaseAnalyticsInterop (1.5.0)
   - FirebaseAuth (6.4.3):
     - FirebaseAuthInterop (~> 1.0)
     - FirebaseCore (~> 6.6)
@@ -266,6 +274,15 @@ PODS:
     - FirebaseInstallations (~> 1.0)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/UserDefaults (~> 6.5)
+  - FirebaseMessaging (4.2.1):
+    - FirebaseAnalyticsInterop (~> 1.5)
+    - FirebaseCore (~> 6.6)
+    - FirebaseInstanceID (~> 4.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.5)
+    - GoogleUtilities/Environment (~> 6.5)
+    - GoogleUtilities/Reachability (~> 6.5)
+    - GoogleUtilities/UserDefaults (~> 6.5)
+    - Protobuf (>= 3.9.2, ~> 3.9)
   - FirebaseStorage (3.5.0):
     - FirebaseAuthInterop (~> 1.0)
     - FirebaseCore (~> 6.0)
@@ -275,8 +292,15 @@ PODS:
     - FBSDKCoreKit (~> 5.5)
     - FBSDKLoginKit (~> 5.5)
     - Flutter
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_plugin_android_lifecycle (0.0.1):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - geolocator (5.2.1):
     - Flutter
   - google_api_availability (2.0.2):
@@ -357,7 +381,15 @@ PODS:
     - nanopb/encode (= 0.3.9011)
   - nanopb/decode (0.3.9011)
   - nanopb/encode (0.3.9011)
+  - path_provider (0.0.1):
+    - Flutter
+  - path_provider_macos (0.0.1):
+    - Flutter
   - PromisesObjC (1.2.8)
+  - Protobuf (3.11.4)
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB (~> 2.7.2)
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
@@ -365,10 +397,13 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_core_web (from `.symlinks/plugins/firebase_core_web/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
@@ -377,6 +412,9 @@ DEPENDENCIES:
   - location (from `.symlinks/plugins/location/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
   trunk:
@@ -390,6 +428,7 @@ SPEC REPOS:
     - FBSDKLoginKit
     - Firebase
     - FirebaseAnalytics
+    - FirebaseAnalyticsInterop
     - FirebaseAuth
     - FirebaseAuthInterop
     - FirebaseCore
@@ -398,7 +437,9 @@ SPEC REPOS:
     - FirebaseFirestore
     - FirebaseInstallations
     - FirebaseInstanceID
+    - FirebaseMessaging
     - FirebaseStorage
+    - FMDB
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
@@ -411,6 +452,7 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
+    - Protobuf
 
 EXTERNAL SOURCES:
   cloud_firestore:
@@ -423,14 +465,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_core_web:
     :path: ".symlinks/plugins/firebase_core_web/ios"
+  firebase_messaging:
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   firebase_storage:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
   flutter_facebook_login:
     :path: ".symlinks/plugins/flutter_facebook_login/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_plugin_android_lifecycle:
     :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator:
     :path: ".symlinks/plugins/geolocator/ios"
   google_api_availability:
@@ -447,6 +495,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location_permissions/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_macos:
+    :path: ".symlinks/plugins/path_provider_macos/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
@@ -463,8 +517,10 @@ SPEC CHECKSUMS:
   firebase_auth: d99b993c1405096e66c58211b1cd956c23eed1c5
   firebase_core: dc539d4bdc69894823e4a6e557034a9e48960f21
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
+  firebase_messaging: b8543d17dd9825f4f24a585477f77db103e5228e
   firebase_storage: cee2383f53c26690269ab667b4dbfe25452c6caa
   FirebaseAnalytics: cf95d3aab897612783020fbd98401d5366f135ee
+  FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
   FirebaseAuth: 5ce2b03a3d7fe56b7a6e4c5ec7ff1522890b1d6f
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
   FirebaseCore: a1dd9dd6355a8356dd30a8f076839e242285a81c
@@ -473,10 +529,14 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 2ee644acccde18e49b2fb5d434c709b1f1171b13
   FirebaseInstallations: 575cd32f2aec0feeb0e44f5d0110a09e5e60b47b
   FirebaseInstanceID: 031d7d0c8e7b5c030bbeb4d2a690550375e83fec
+  FirebaseMessaging: 9e23f9d603b1fb71ccbeb48d79bf0d4ba0272c84
   FirebaseStorage: 6c5263796af3b1be82ed173598aade47535fe125
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
+  flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
+  fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator: a048cc412bf350b17d671d170f151b0c9fb8f098
   google_api_availability: 6f1017d3a61be12be3bd9f929cc5b2606f24ae7f
   google_sign_in: decaf71f56e22fb1dc179de062177ae6df415716
@@ -496,7 +556,11 @@ SPEC CHECKSUMS:
   location_permissions: 360d12ecd1c94a4cab68585f508be1d5ad944c8b
   multi_image_picker: 9fe118993be074708a1a2d3152ea48259d422988
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
+  Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
+  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
 
 PODFILE CHECKSUM: e45c292f618eeca3034958d33b444b6e1249b55f
 

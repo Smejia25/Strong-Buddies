@@ -32,7 +32,7 @@ class PicturesBloc extends Bloc<PicturesUploadPictures, PicturesState> {
         userId,
         event.picturesSelectedFromGallery,
       );
-      await _userCollection.updateUserPictures(userId, urlOfUploadedPics);
+      await _userCollection.updateUserPictures(userId, urlOfUploadedPics, event.profilePictureFromUploadedPictures);
       yield (PicturesUploadedSucessful());
     } catch (e) {
       yield (PicturesUploadWithError(e.toString()));

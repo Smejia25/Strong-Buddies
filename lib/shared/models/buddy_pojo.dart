@@ -6,6 +6,7 @@ class Buddy {
   String _gymMemberShip;
   List<String> _pictures;
   List<String> _workoutTypes;
+  String _photoUrl;
 
   Buddy({
     String id,
@@ -47,6 +48,9 @@ class Buddy {
   String get id => _id;
   set id(String id) => _id = id;
 
+  String get photoUrl => _photoUrl;
+  set photoUrl(String photoUrl) => _photoUrl = photoUrl;
+
   Buddy.fromJson(Map<String, dynamic> json) {
     _gender = json['gender'];
     _displayName = json['displayName'];
@@ -54,6 +58,7 @@ class Buddy {
     _gymMemberShip = json['gymMemberShip'];
     _pictures = json['pictures'].cast<String>();
     _workoutTypes = json['workoutTypes'].cast<String>();
+    _photoUrl = json['photoUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +69,7 @@ class Buddy {
     data['gymMemberShip'] = this._gymMemberShip;
     data['pictures'] = this._pictures;
     data['workoutTypes'] = this._workoutTypes;
+    data['photoUrl'] = this._photoUrl;
     return data;
   }
 }

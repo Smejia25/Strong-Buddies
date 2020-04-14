@@ -2,13 +2,13 @@ part of 'pictures_bloc.dart';
 
 class PicturesUploadPictures extends Equatable {
   final List<Asset> picturesSelectedFromGallery;
-  final Asset profilePicture;
+  final int profilePictureFromUploadedPictures;
 
   const PicturesUploadPictures(
     this.picturesSelectedFromGallery,
-    this.profilePicture,
+    this.profilePictureFromUploadedPictures,
   );
 
   @override
-  List<Object> get props => [picturesSelectedFromGallery, profilePicture];
+  List<Object> get props => [picturesSelectedFromGallery, profilePictureFromUploadedPictures];
 }

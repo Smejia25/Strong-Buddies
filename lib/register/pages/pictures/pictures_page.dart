@@ -8,6 +8,7 @@ import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/shared/services/user_storage.dart';
 import 'package:strong_buddies_connect/shared/utils/form_util.dart';
+import 'package:strong_buddies_connect/shared/utils/list_utils.dart';
 
 import 'bloc/pictures_bloc.dart';
 
@@ -20,7 +21,7 @@ class PicturesPage extends StatefulWidget {
 
 class _PicturesPageState extends State<PicturesPage> {
   List<Asset> _picturesSelectedFromGallery = [];
-  Asset _profilePicture;
+  int _profilePicture;
   PicturesBloc _bloc;
 
   Loader _loader;
@@ -81,10 +82,11 @@ class _PicturesPageState extends State<PicturesPage> {
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 20,
                                 mainAxisSpacing: 20,
-                                children: _picturesSelectedFromGallery
-                                    .map((selectedImage) => TappableWrapper(
-                                          onTap: () => setState(() =>
-                                              _profilePicture = selectedImage),
+                                children: turnListToWidgetList<Asset>(
+                                    _picturesSelectedFromGallery,
+                                    (index, picture) => TappableWrapper(
+                                          onTap: () => setState(
+                                              () => _profilePicture = index),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: ClipRRect(
@@ -92,14 +94,13 @@ class _PicturesPageState extends State<PicturesPage> {
                                                   BorderRadius.circular(50.0),
                                               child: AssetThumb(
                                                 quality: 100,
-                                                asset: selectedImage,
+                                                asset: picture,
                                                 height: 1000,
                                                 width: 1000,
                                               ),
                                             ),
                                           ),
-                                        ))
-                                    .toList()),
+                                        )).toList()),
                           ),
                         ),
                         Container(
@@ -118,7 +119,7 @@ class _PicturesPageState extends State<PicturesPage> {
                                     setState(() {
                                       _picturesSelectedFromGallery =
                                           selectedPics;
-                                      _profilePicture = selectedPics[0];
+                                      _profilePicture = 0;
                                     });
                                   } catch (e) {}
                                 },
@@ -168,19 +169,23 @@ class _PicturesPageState extends State<PicturesPage> {
     return _profilePicture != null
         ? Center(
             child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(width: 2, color: Colors.white70)),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100.0),
-                        child: AssetThumb(
-                          quality: 100,
-                          asset: _profilePicture,
-                          height: 150,
-                          width: 150,
-                        )))))
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(width: 2, color: Colors.white70)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100.0),
+                  child: AssetThumb(
+                    quality: 100,
+                    asset: _picturesSelectedFromGallery[_profilePicture],
+                    height: 150,
+                    width: 150,
+                  ),
+                ),
+              ),
+            ),
+          )
         : Center();
   }
 }

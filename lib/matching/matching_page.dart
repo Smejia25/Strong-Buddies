@@ -21,6 +21,8 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
+  final userCol = UserCollection();
+  final auth = AuthService();
   final _controller = PageController();
   final _bloc = MatchingBloc(UserCollection(), AuthService());
   Loader _loader;
@@ -30,11 +32,49 @@ class _UserInfoPageState extends State<UserInfoPage> {
     super.initState();
     _loader = Loader(context);
     _bloc.add(RequestBuddies());
+    auth.getCurrentUser().then((onValue) {
+      userCol.listenToChanges(onValue.uid, (buddies) {
+        buddies.forEach((buddy) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: new Text("You have a match"),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.network(buddy.photoUrl, height: 200),
+                    Text(buddy.displayName)
+                  ],
+                ),
+                actions: <Widget>[
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              );
+            },
+          );
+        });
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, Routes.chatListPage),
+        child: Icon(
+          Icons.chat,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.green,
+      ),
       body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -86,13 +126,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                             Routes.loginPage,
                                             (_) => false);
                                       } */
-                                          () {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            // state.wasUserInfoFound ? Routes.matchPage : Routes.registerPage,
-                                            Routes.chatListPage,
-                                            (_) => false);
-                                      },
+                                          () {},
                                       child: Text('Sign Out'),
                                     )
                                   ],
