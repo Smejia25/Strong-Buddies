@@ -26,3 +26,10 @@ class RegisterEventCreateUser extends RegisterEvent {
   @override
   List<Object> get props => [];
 }
+
+class RegisterEventCancelRegister extends RegisterEvent {
+  const RegisterEventCancelRegister();
+
+  @override
+  List<Object> get props => [];
+}

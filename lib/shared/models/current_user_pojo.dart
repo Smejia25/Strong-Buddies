@@ -5,7 +5,8 @@ import 'buddy_pojo.dart';
 class CurrentUser extends Buddy {
   List<String> _targetGender;
   String _email;
-  String _name;
+  String _name;  
+  String _token;
 
   CurrentUser({List<String> targetGender, String email, String name}) {
     this._targetGender = targetGender;
@@ -19,6 +20,7 @@ class CurrentUser extends Buddy {
   set email(String email) => _email = email;
   String get name => _name;
   set name(String name) => _name = name;
+  set token(String token) => _token = token;
 
   CurrentUser.fromPublicJson(Map<String, dynamic> json) {
     gender = json['gender'];
@@ -52,6 +54,7 @@ class CurrentUser extends Buddy {
     data['targetGender'] = this.targetGender;
     data['email'] = this.email;
     data['name'] = this.name;
+    data['token'] = this._token;
 
     return data;
   }

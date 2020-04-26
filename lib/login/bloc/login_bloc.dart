@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
@@ -14,8 +15,9 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthService _auth;
   final UserCollection userRespository;
+  final FirebaseMessaging _firebaseMessaging;
 
-  LoginBloc(this._auth, this.userRespository);
+  LoginBloc(this._auth, this.userRespository, this._firebaseMessaging);
 
   @override
   LoginState get initialState => LoginInitial();
@@ -30,6 +32,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final userResult = await loginPromise;
       final user =
           await userRespository.getCurrentUserInfo(userResult.user.uid);
+      if (user != null) {
+        final token = await _firebaseMessaging.getToken();
+        await userRespository.updateNotificationTokens(
+          token,
+          userResult.user.uid,
+        );
+      }
       final routeToNavigateNext = getNavigationRouteBasedOnUserState(user);
       yield SuccesfulLogin(routeToNavigateNext);
     } catch (e) {
@@ -38,7 +47,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   String _getErrorToShow(Exception error) {
-    return error is PlatformException ? error.message : error.toString();
+    return error is PlatformException ? error.message : '';
   }
 
   Future<AuthResult> _getLoginType(LoginEvent event) {

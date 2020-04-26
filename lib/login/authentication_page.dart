@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/login/bloc/login_bloc.dart';
@@ -28,16 +29,20 @@ class LoginPage extends StatelessWidget {
             child: Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: BlocProvider(
-                create: (BuildContext context) =>
-                    LoginBloc(AuthService(), UserCollection()),
+                create: (BuildContext context) => LoginBloc(
+                  AuthService(),
+                  UserCollection(),
+                  FirebaseMessaging(),
+                ),
                 child: BlocListener<LoginBloc, LoginState>(
                   listener: _handleSuccesfulLogin,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       FractionallySizedBox(
-                          widthFactor: 0.65,
-                          child: Image.asset('assets/images/logo.png')),
+                        widthFactor: 0.65,
+                        child: Image.asset('assets/images/logo.png'),
+                      ),
                       AuthenticationForm(),
                       const DividerSection(),
                       const SocialNetworkLogin(),

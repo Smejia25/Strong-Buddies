@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/register/pages/register/bloc/register_bloc.dart';
@@ -23,8 +24,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _controller = PageController();
-
-  RegisterBloc _bloc = RegisterBloc(AuthService(), UserCollection());
+  RegisterBloc _bloc = RegisterBloc(AuthService(), UserCollection(), FirebaseMessaging());
   List<Widget> _userFields = [];
   Loader loader;
 
@@ -77,9 +77,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 SafeArea(
-                  child: PageView(
-                    controller: _controller,
-                    children: _userFields,
+                  child: Stack(
+                    children: <Widget>[
+                      PageView(
+                        controller: _controller,
+                        children: _userFields,
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: IconButton(
+                          onPressed: () =>
+                              _bloc.add(RegisterEventCancelRegister()),
+                          icon: Icon(Icons.close, color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               ],
@@ -102,6 +115,9 @@ class _RegisterPageState extends State<RegisterPage> {
       loader.dismissLoader();
       Navigator.pushNamedAndRemoveUntil(
           context, Routes.picturePage, (_) => false);
+    } else if (state is RegisterCanceled) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.loginPage, (_) => false);
     }
   }
 }

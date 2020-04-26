@@ -8,6 +8,7 @@ import 'package:strong_buddies_connect/themes/main_theme.dart';
 import 'package:strong_buddies_connect/login/authentication_page.dart';
 import 'register/pages/pictures/pictures_page.dart';
 import 'package:strong_buddies_connect/chatList/chatList.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'matching/matching_page.dart';
 import 'shared/utils/navigation_util.dart';
@@ -15,7 +16,7 @@ import 'shared/utils/navigation_util.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final startPage = await handleInitialConfig();
-  runApp(MyApp(startPage: startPage));
+  runApp(MaterialApp(home: MyApp(startPage: startPage)));
 }
 
 Future<String> handleInitialConfig() async {
@@ -39,14 +40,71 @@ Future<String> getInitialPage() async {
   return getNavigationRouteBasedOnUserState(userInfo);
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final String startPage;
   const MyApp({startPage: '/'}) : this.startPage = startPage;
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+      try {
+        final Map<dynamic, dynamic> data = message['data'];
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: new Text("You have a match"),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image.network(data['photoUrl'], height: 200),
+                  Text(data['displayName'])
+                ],
+              ),
+              actions: <Widget>[
+                RaisedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Ok'),
+                )
+              ],
+            );
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }, onLaunch: (Map<String, dynamic> message) async {
+      Navigator.pushNamed(context, Routes.chatListPage);
+    }, onResume: (Map<String, dynamic> message) async {
+      Navigator.pushNamed(context, Routes.chatListPage);
+    });
+
+    /* _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true, badge: true, alert: true, provisional: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    }); */
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        initialRoute: this.startPage,
+        initialRoute: this.widget.startPage,
         routes: {
           Routes.matchPage: (context) => UserInfoPage(),
           Routes.loginPage: (context) => LoginPage(),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:strong_buddies_connect/register/pages/register/models/registration_user.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
@@ -12,12 +13,13 @@ part 'register_state.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final AuthService _auth;
   final UserCollection _userCollection;
+  final FirebaseMessaging _firebaseMessaging;
 
   RegistrationUser _userInfo = RegistrationUser()
     ..targetGender = ['Woman', 'Man', 'Other'];
   bool _userFound = false;
 
-  RegisterBloc(this._auth, this._userCollection);
+  RegisterBloc(this._auth, this._userCollection, this._firebaseMessaging);
 
   @override
   RegisterState get initialState => RegisterInitial(_userInfo, _userFound);
@@ -35,6 +37,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         if (!_userFound)
           await _auth.registerUser(_userInfo.email, _userInfo.password);
         _userInfo.id = (await _auth.getCurrentUser()).uid;
+        _userInfo.token = await _firebaseMessaging.getToken();
+
         await _userCollection.setUserInfo(_userInfo);
         yield (RegisterSucessful(_userInfo, _userFound));
       } catch (e) {
@@ -51,6 +55,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
 
       yield (RegisterInitialUserInfo(_userInfo, _userFound));
+    } else if (event is RegisterEventCancelRegister) {
+      final isThereAUserLoggedIn = (await _auth.getCurrentUser()) != null;
+      if (isThereAUserLoggedIn) await _auth.singOut();
+      yield (RegisterCanceled(_userInfo, _userFound));
     }
   }
 }

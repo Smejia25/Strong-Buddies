@@ -48,3 +48,8 @@ class RegisterSucessful extends RegisterState {
     bool userFound,
   ) : super(user, userFound);
 }
+
+class RegisterCanceled extends RegisterState {
+  const RegisterCanceled(RegistrationUser user, bool userFound)
+      : super(user, userFound);
+}

@@ -41,6 +41,13 @@ class UserCollection {
     return currentUserInfo = currentUser;
   }
 
+  Future<void> updateNotificationTokens(String token, String userId) {
+    return _firestoreInstance
+        .collection(_collection)
+        .document(userId)
+        .setData({'token': token}, merge: true);
+  }
+
   Future<Buddy> getUser(String email) async {
     final userDocument =
         await _firestoreInstance.collection(_collection).document(email).get();
