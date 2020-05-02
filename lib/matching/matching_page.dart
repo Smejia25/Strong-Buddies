@@ -25,7 +25,7 @@ class _UserInfoPageState extends State<UserInfoPage>
   final tabs = <Tab>[
     Tab(icon: Icon(Icons.collections_bookmark)),
     Tab(icon: Icon(Icons.chat)),
-    // Tab(icon: Icon(Icons.person)),
+    Tab(icon: Icon(Icons.person)),
   ];
   final userCol = UserCollection();
   final auth = AuthService();
@@ -136,7 +136,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                 ),
               ),
               ChatList(),
-              // ProfilePage()
+              ProfilePage()
             ]));
   }
 
@@ -164,7 +164,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      height: 400,
+                      height: 330,
                       child: PageView.builder(
                           itemCount:
                               potentialBuddyToBeMatchedWith.pictures.length,
@@ -205,7 +205,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                 ],
               )),
         ),
-        const Spacer(),
+        // const Spacer(),
         Card(
           elevation: 4,
           child: Padding(

@@ -12,11 +12,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'matching/matching_page.dart';
 import 'shared/utils/navigation_util.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final startPage = await handleInitialConfig();
-  runApp(MaterialApp(home: MyApp(startPage: startPage)));
+  runApp(MaterialApp(
+    home: MyApp(startPage: startPage),
+    debugShowCheckedModeBanner: false,
+  ));
 }
 
 Future<String> handleInitialConfig() async {
@@ -54,7 +58,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
       try {
@@ -103,6 +106,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: 375, height: 812, allowFontScaling: false);
     return MaterialApp(
         initialRoute: this.widget.startPage,
         routes: {
