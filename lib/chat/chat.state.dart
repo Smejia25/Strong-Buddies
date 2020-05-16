@@ -12,6 +12,33 @@ import 'package:image_picker/image_picker.dart';
 import 'package:strong_buddies_connect/shared/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
+
+class TriangleClipper extends CustomClipper<Path> {
+  TriangleClipper(this.isLeft);
+  bool isLeft;
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    if (isLeft) {
+      path.lineTo(0, size.height);
+      path.lineTo(size.width, 0.0);
+    } else {
+      path.lineTo(size.width, 0.0);
+      path.lineTo(size.width, size.height);
+    }
+
+    path.close();
+
+    /*   path.lineTo(size.width, 0.0);
+
+    path.lineTo(size.width, size.height); */
+    return path;
+  }
+
+  @override
+  bool shouldReclip(TriangleClipper oldClipper) => false;
+}
+
 class ChatScreenState extends State<ChatScreen> {
   ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar});
 
@@ -27,7 +54,8 @@ class ChatScreenState extends State<ChatScreen> {
   bool isShowSticker;
   String imageUrl;
 
-  final TextEditingController textEditingController = new TextEditingController();
+  final TextEditingController textEditingController =
+      new TextEditingController();
   final ScrollController listScrollController = new ScrollController();
   final FocusNode focusNode = new FocusNode();
 
@@ -56,8 +84,8 @@ class ChatScreenState extends State<ChatScreen> {
 
   readLocal() async {
     final auth = AuthService();
-  
-  final user = await auth.getCurrentUser();
+
+    final user = await auth.getCurrentUser();
     id = user.uid ?? '';
     if (id.hashCode <= peerId.hashCode) {
       groupChatId = '$id-$peerId';
@@ -65,13 +93,18 @@ class ChatScreenState extends State<ChatScreen> {
       groupChatId = '$peerId-$id';
     }
 
-    Firestore.instance.collection('users').document(id).updateData({'chattingWith': peerId});
+    Firestore.instance
+        .collection('users')
+        .document(id)
+        .updateData({'chattingWith': peerId});
 
     setState(() {});
   }
 
-  Future getImage() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future getImage(bool isCamera) async {
+    imageFile = isCamera
+        ? await ImagePicker.pickImage(source: ImageSource.camera)
+        : await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (imageFile != null) {
       setState(() {
@@ -81,7 +114,6 @@ class ChatScreenState extends State<ChatScreen> {
     }
   }
 
- 
   Future uploadFile() async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
@@ -124,7 +156,8 @@ class ChatScreenState extends State<ChatScreen> {
           },
         );
       });
-      listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      listScrollController.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
       Fluttertoast.showToast(msg: 'Nothing to send');
     }
@@ -133,72 +166,99 @@ class ChatScreenState extends State<ChatScreen> {
   Widget buildItem(int index, DocumentSnapshot document) {
     if (document['idFrom'] == id) {
       // Right (my message)
-      return Row(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           document['type'] == 0
               // Text
               ? Container(
+                  constraints: BoxConstraints(maxWidth: 250),
                   child: Text(
                     document['content'],
-                    style: TextStyle(color: primaryColor),
+                    style: TextStyle(color: Color(0xFFFFFFFF)),
                   ),
                   padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                  width: 200.0,
-                  decoration: BoxDecoration(color: greyColor2, borderRadius: BorderRadius.circular(8.0)),
-                  margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment
+                            .bottomLeft, // 10% of the width, so there are ten blinds.
+                        colors: [
+                          const Color(0xFFFF8960),
+                          const Color(0xFFFF62A5)
+                        ], // whitish to gray
+                        tileMode: TileMode
+                            .repeated, // repeats the gradient over the canvas
+                      ),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8.0),
+                          topRight: Radius.circular(8.0),
+                          bottomLeft: Radius.circular(8.0))),
                 )
-              : document['type'] == 1
-                  // Image
-                  ? Container(
-                      child: FlatButton(
-                        child: Material(
-                          child: CachedNetworkImage(
-                            placeholder: (context, url) => Container(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                              ),
-                              width: 200.0,
-                              height: 200.0,
-                              padding: EdgeInsets.all(70.0),
-                              decoration: BoxDecoration(
-                                color: greyColor2,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8.0),
-                                ),
-                              ),
+              : Container(
+                  child: FlatButton(
+                    child: Material(
+                      child: CachedNetworkImage(
+                        placeholder: (context, url) => Container(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(themeColor),
+                          ),
+                          width: 200.0,
+                          height: 200.0,
+                          padding: EdgeInsets.all(70.0),
+                          decoration: BoxDecoration(
+                            color: greyColor2,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
                             ),
-                            errorWidget: (context, url, error) => Material(
-                              child: Image.asset(
-                                'assets/images/img_not_available.jpeg',
-                                width: 200.0,
-                                height: 200.0,
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0),
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                            ),
-                            imageUrl: document['content'],
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Material(
+                          child: Image.asset(
+                            'assets/images/img_not_available.jpeg',
                             width: 200.0,
                             height: 200.0,
                             fit: BoxFit.cover,
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
                           clipBehavior: Clip.hardEdge,
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => FullPhoto(url: document['content'])));
-                        },
-                        padding: EdgeInsets.all(0),
+                        imageUrl: document['content'],
+                        width: 200.0,
+                        height: 200.0,
+                        fit: BoxFit.cover,
                       ),
-                      margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
-                    )
-                  // Sticker
-                  : Container(
-                      
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      clipBehavior: Clip.hardEdge,
                     ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  FullPhoto(url: document['content'])));
+                    },
+                    padding: EdgeInsets.all(0),
+                  ),
+                  margin: EdgeInsets.only(
+                    bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                  ),
+                )
+          // Sticker
+          ,
+          document['type'] == 0
+              ? ClipPath(
+                  clipper: TriangleClipper(false),
+                  child: Container(
+                    height: 10,
+                    width: 10,
+                    color: Color(0xFFFF8960),
+                  ),
+                )
+              : Container()
         ],
         mainAxisAlignment: MainAxisAlignment.end,
       );
@@ -207,108 +267,102 @@ class ChatScreenState extends State<ChatScreen> {
       return Container(
         child: Column(
           children: <Widget>[
-            Row(
+            Column(
               children: <Widget>[
-                isLastMessageLeft(index)
-                    ? Material(
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.0,
-                              valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                            ),
-                            width: 35.0,
-                            height: 35.0,
-                            padding: EdgeInsets.all(10.0),
-                          ),
-                          imageUrl: peerAvatar,
-                          width: 35.0,
-                          height: 35.0,
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(18.0),
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                      )
-                    : Container(width: 35.0),
                 document['type'] == 0
                     ? Container(
+                        constraints: BoxConstraints(maxWidth: 250),
                         child: Text(
                           document['content'],
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: primaryColor),
                         ),
                         padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                        width: 200.0,
-                        decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(8.0)),
-                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                            color: greyColor2,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8.0),
+                                topRight: Radius.circular(8.0),
+                                bottomRight: Radius.circular(8.0))),
                       )
-                    : document['type'] == 1
-                        ? Container(
-                            child: FlatButton(
-                              child: Material(
-                                child: CachedNetworkImage(
-                                  placeholder: (context, url) => Container(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                                    ),
-                                    width: 200.0,
-                                    height: 200.0,
-                                    padding: EdgeInsets.all(70.0),
-                                    decoration: BoxDecoration(
-                                      color: greyColor2,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) => Material(
-                                    child: Image.asset(
-                                      'assets/images/img_not_available.jpeg',
-                                      width: 200.0,
-                                      height: 200.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8.0),
-                                    ),
-                                    clipBehavior: Clip.hardEdge,
-                                  ),
-                                  imageUrl: document['content'],
+                    : Container(
+                        child: FlatButton(
+                          child: Material(
+                            child: CachedNetworkImage(
+                              placeholder: (context, url) => Container(
+                                child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(themeColor),
+                                ),
+                                width: 200.0,
+                                height: 200.0,
+                                padding: EdgeInsets.all(70.0),
+                                decoration: BoxDecoration(
+                                  color: greyColor2,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(8.0),
+                                      topRight: Radius.circular(8.0),
+                                      bottomRight: Radius.circular(8.0)),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Material(
+                                child: Image.asset(
+                                  'assets/images/img_not_available.jpeg',
                                   width: 200.0,
                                   height: 200.0,
                                   fit: BoxFit.cover,
                                 ),
-                                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
                                 clipBehavior: Clip.hardEdge,
                               ),
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => FullPhoto(url: document['content'])));
-                              },
-                              padding: EdgeInsets.all(0),
-                            ),
-                            margin: EdgeInsets.only(left: 10.0),
-                          )
-                        : Container(
-                            child: new Image.asset(
-                              'images/${document['content']}.gif',
-                              width: 100.0,
-                              height: 100.0,
+                              imageUrl: document['content'],
+                              width: 200.0,
+                              height: 200.0,
                               fit: BoxFit.cover,
                             ),
-                            margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8.0),
+                                topRight: Radius.circular(8.0),
+                                bottomRight: Radius.circular(8.0)),
+                            clipBehavior: Clip.hardEdge,
                           ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        FullPhoto(url: document['content'])));
+                          },
+                          padding: EdgeInsets.all(0),
+                        ),
+                      ),
+                document['type'] == 0
+                    ? ClipPath(
+                        clipper: TriangleClipper(true),
+                        child: Container(
+                          alignment: Alignment(20, 20),
+                          height: 10,
+                          width: 10,
+                          color: greyColor2,
+                        ),
+                      )
+                    : Container(),
               ],
+              crossAxisAlignment: CrossAxisAlignment.start,
             ),
 
             // Time
             isLastMessageLeft(index)
                 ? Container(
                     child: Text(
-                      DateFormat('dd MMM kk:mm')
-                          .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document['timestamp']))),
-                      style: TextStyle(color: greyColor, fontSize: 12.0, fontStyle: FontStyle.italic),
+                      DateFormat('dd MMM kk:mm').format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                              int.parse(document['timestamp']))),
+                      style: TextStyle(
+                          color: greyColor,
+                          fontSize: 12.0,
+                          fontStyle: FontStyle.italic),
                     ),
                     margin: EdgeInsets.only(left: 50.0, top: 5.0, bottom: 5.0),
                   )
@@ -322,7 +376,10 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   bool isLastMessageLeft(int index) {
-    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] == id) || index == 0) {
+    if ((index > 0 &&
+            listMessage != null &&
+            listMessage[index - 1]['idFrom'] == id) ||
+        index == 0) {
       return true;
     } else {
       return false;
@@ -330,7 +387,10 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   bool isLastMessageRight(int index) {
-    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] != id) || index == 0) {
+    if ((index > 0 &&
+            listMessage != null &&
+            listMessage[index - 1]['idFrom'] != id) ||
+        index == 0) {
       return true;
     } else {
       return false;
@@ -343,7 +403,10 @@ class ChatScreenState extends State<ChatScreen> {
         isShowSticker = false;
       });
     } else {
-      Firestore.instance.collection('users').document(id).updateData({'chattingWith': null});
+      Firestore.instance
+          .collection('users')
+          .document(id)
+          .updateData({'chattingWith': null});
       Navigator.pop(context);
     }
 
@@ -375,13 +438,13 @@ class ChatScreenState extends State<ChatScreen> {
     );
   }
 
-
   Widget buildLoading() {
     return Positioned(
       child: isLoading
           ? Container(
               child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)),
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(themeColor)),
               ),
               color: Colors.white.withOpacity(0.8),
             )
@@ -398,9 +461,9 @@ class ChatScreenState extends State<ChatScreen> {
             child: new Container(
               margin: new EdgeInsets.symmetric(horizontal: 1.0),
               child: new IconButton(
-                icon: new Icon(Icons.image),
-                onPressed: getImage,
-                color: primaryColor,
+                icon: new Icon(Icons.photo_camera),
+                onPressed: () => getImage(true),
+                color: greyColor,
               ),
             ),
             color: Colors.white,
@@ -409,23 +472,49 @@ class ChatScreenState extends State<ChatScreen> {
             child: new Container(
               margin: new EdgeInsets.symmetric(horizontal: 1.0),
               child: new IconButton(
-                icon: new Icon(Icons.face),
-                onPressed: null,
-                color: primaryColor,
+                icon: new Icon(Icons.image),
+                onPressed: () => getImage(false),
+                color: greyColor,
               ),
             ),
             color: Colors.white,
           ),
-
           // Edit text
           Flexible(
             child: Container(
+              height: 35,
               child: TextField(
-                style: TextStyle(color: primaryColor, fontSize: 15.0),
+                style: TextStyle(
+                  color: primaryColor,
+                  fontSize: 10.0,
+                ),
                 controller: textEditingController,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Type your message...',
-                  hintStyle: TextStyle(color: greyColor),
+                decoration: InputDecoration(
+                  hintText: 'Hint Text',
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                    borderSide:
+                        BorderSide(color: Color(0xffE9E9E9), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                    borderSide:
+                        BorderSide(color: Color(0xffE9E9E9), width: 1.0),
+                  ),
+                  errorBorder: InputBorder.none,
+                  border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                    borderSide:
+                        BorderSide(color: Color(0xffE9E9E9), width: 1.0),
+                  ),
+                  contentPadding:
+                      EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
                 ),
                 focusNode: focusNode,
               ),
@@ -439,7 +528,7 @@ class ChatScreenState extends State<ChatScreen> {
               child: new IconButton(
                 icon: new Icon(Icons.send),
                 onPressed: () => onSendMessage(textEditingController.text, 0),
-                color: primaryColor,
+                color: Color(0xFFFF62A5),
               ),
             ),
             color: Colors.white,
@@ -449,14 +538,18 @@ class ChatScreenState extends State<ChatScreen> {
       width: double.infinity,
       height: 50.0,
       decoration: new BoxDecoration(
-          border: new Border(top: new BorderSide(color: greyColor2, width: 0.5)), color: Colors.white),
+          border:
+              new Border(top: new BorderSide(color: greyColor2, width: 0.5)),
+          color: Colors.white),
     );
   }
 
   Widget buildListMessage() {
     return Flexible(
       child: groupChatId == ''
-          ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)))
+          ? Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(themeColor)))
           : StreamBuilder(
               stream: Firestore.instance
                   .collection('messages')
@@ -468,12 +561,15 @@ class ChatScreenState extends State<ChatScreen> {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
-                      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)));
+                      child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(themeColor)));
                 } else {
                   listMessage = snapshot.data.documents;
                   return ListView.builder(
                     padding: EdgeInsets.all(10.0),
-                    itemBuilder: (context, index) => buildItem(index, snapshot.data.documents[index]),
+                    itemBuilder: (context, index) =>
+                        buildItem(index, snapshot.data.documents[index]),
                     itemCount: snapshot.data.documents.length,
                     reverse: true,
                     controller: listScrollController,

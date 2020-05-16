@@ -47,6 +47,8 @@ flutter:
     - assets/images/logo.png
     - assets/images/demo_image.jpg
     - assets/images/demo.png
+    - assets/images/img_not_available.jpeg
+
 
   fonts:
     - family: Ubuntu
