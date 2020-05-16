@@ -9,7 +9,7 @@ import 'package:strong_buddies_connect/chat/const.dart';
 import 'package:strong_buddies_connect/chat/fullPhoto.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
 class ChatScreenState extends State<ChatScreen> {

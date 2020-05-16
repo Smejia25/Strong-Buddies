@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/shared/utils/navigation_util.dart';
 
@@ -17,7 +17,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserCollection userRespository;
   final FirebaseMessaging _firebaseMessaging;
 
-  LoginBloc(this._auth, this.userRespository, this._firebaseMessaging);
+  LoginBloc(
+    this._auth,
+    this.userRespository,
+    this._firebaseMessaging,
+  );
 
   @override
   LoginState get initialState => LoginInitial();
@@ -47,19 +51,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   String _getErrorToShow(Exception error) {
-    return error is PlatformException ? error.message : '';
+    return error is PlatformException && error.message.isNotEmpty
+        ? error.message
+        : '';
   }
 
   Future<AuthResult> _getLoginType(LoginEvent event) {
-    Future<AuthResult> loginPromise;
-
-    if (event is PerformLoginWithCredentials)
-      loginPromise = _auth.login(event.email, event.password);
-    else if (event is PerformLoginWithGoogle)
-      loginPromise = _auth.loginWithGoogle();
+    if (event is PerformLoginWithGoogle)
+      return _auth.loginWithGoogle();
     else if (event is PerformLoginWithFacebook)
-      loginPromise = _auth.loginWithFacebook();
-
-    return loginPromise;
+      return _auth.loginWithFacebook();
+    return null;
   }
 }

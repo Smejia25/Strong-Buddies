@@ -7,7 +7,7 @@ import 'package:strong_buddies_connect/matching/models/matched_buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
 part 'matching_event.dart';

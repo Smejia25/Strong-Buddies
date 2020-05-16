@@ -22,7 +22,6 @@ class UserCollection {
 
   Future<CurrentUser> getCurrentUserInfo(String id) async {
     if (currentUserInfo != null) return currentUserInfo;
-
     final documentRef = _firestoreInstance.collection(_collection).document(id);
 
     final publicDataPromise = documentRef.get();

@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+
+import 'login_with_phone_results.dart';
 
 class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -14,8 +19,38 @@ class AuthService {
     return _auth.signOut();
   }
 
-  Future<AuthResult> login(String email, String passwod) {
-    return _auth.signInWithEmailAndPassword(email: email, password: passwod);
+  Future<AuthResult> signInWithPhoneNumber(
+    String verificationId,
+    String code,
+  ) async {
+    final AuthCredential credential = PhoneAuthProvider.getCredential(
+        verificationId: verificationId, smsCode: code);
+
+    final user = await _auth.signInWithCredential(credential);
+    return user;
+  }
+
+  Future<void> verifyPhone(
+    String phoneNumber, {
+    void Function(AuthResult) onLoginSucessful,
+    void Function(String, [int]) codeSent,
+    void Function(AuthException) verificationFailed,
+    void Function(String) codeAutoRetrievalTimeout,
+  }) {
+    const duration = const Duration(seconds: 60);
+    return _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      timeout: duration,
+      codeSent: codeSent,
+      verificationFailed: verificationFailed,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+      verificationCompleted: (credentials) async {
+        try {
+          final user = await _auth.signInWithCredential(credentials);
+          onLoginSucessful(user);
+        } catch (e) {}
+      },
+    );
   }
 
   Future<AuthResult> registerUser(String email, String password) {

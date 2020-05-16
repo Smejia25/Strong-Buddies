@@ -1,19 +1,6 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/chat/const.dart';
-import 'package:strong_buddies_connect/chat/fullPhoto.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
-import 'package:strong_buddies_connect/shared/services/user_collection.dart';
-
-import 'package:intl/intl.dart';
 import 'package:strong_buddies_connect/buddyDetail/buddyDetail.dart';
 
 class BuddyScreenState extends State<BuddyScreen> {

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/register/pages/register/bloc/register_bloc.dart';
 import 'package:strong_buddies_connect/register/pages/register/components/register_password.dart';
 import 'package:strong_buddies_connect/routes.dart';
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'components/register_display_name.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:strong_buddies_connect/chat/const.dart';
 import 'package:strong_buddies_connect/chat/chat.state.dart';
 import 'package:strong_buddies_connect/buddyDetail/buddyDetail.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
 class ProfilePage extends StatefulWidget {

@@ -21,8 +21,7 @@ ThemeData buildAppTheme() {
         buttonColor: primaryColor,
         textTheme: ButtonTextTheme.accent,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        height: 45),
+            borderRadius: BorderRadius.all(Radius.circular(5)))),
     inputDecorationTheme: InputDecorationTheme(
       labelStyle:
           TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.w500),
@@ -41,7 +40,7 @@ ThemeData buildAppTheme() {
 
 TextTheme textTheme(String fontFamily, double fontsizeButton) {
   return TextTheme(
-    body1: TextStyle(fontFamily: fontFamily),
+    bodyText1: TextStyle(fontFamily: fontFamily),
     button: TextStyle(
       fontFamily: fontFamily,
       fontSize: fontsizeButton,

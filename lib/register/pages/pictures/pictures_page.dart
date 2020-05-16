@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/components/tappable_wrapper.dart';
-import 'package:strong_buddies_connect/shared/services/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/shared/services/user_storage.dart';
