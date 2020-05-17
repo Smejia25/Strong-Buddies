@@ -1,3 +1,5 @@
+import 'package:strong_buddies_connect/shared/utils/models_util.dart';
+
 class Buddy {
   String _id;
   String _gender;
@@ -7,6 +9,7 @@ class Buddy {
   List<String> _pictures;
   List<String> _workoutTypes;
   String _photoUrl;
+  String aboutMe;
 
   Buddy({
     String id,
@@ -56,9 +59,10 @@ class Buddy {
     _displayName = json['displayName'];
     _preferTimeWorkout = json['preferTimeWorkout'];
     _gymMemberShip = json['gymMemberShip'];
-    _pictures = json['pictures'].cast<String>();
-    _workoutTypes = json['workoutTypes'].cast<String>();
+    _pictures = castJsonPropertyToListToList(json,'pictures');
+    _workoutTypes = castJsonPropertyToListToList(json,'workoutTypes');
     _photoUrl = json['photoUrl'];
+    aboutMe = json['aboutMe'];
   }
 
   Map<String, dynamic> toJson() {
@@ -70,6 +74,7 @@ class Buddy {
     data['pictures'] = this._pictures;
     data['workoutTypes'] = this._workoutTypes;
     data['photoUrl'] = this._photoUrl;
+    data['aboutMe'] = this.aboutMe;
     return data;
   }
 }

@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/location_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/themes/main_theme.dart';
-// import 'package:strong_buddies_connect/login/authentication_page.dart';
 import 'authentication/login/login_page.dart';
 import 'authentication/login_with_phone/login_with_phone.dart';
 import 'register/pages/newRegister/register_page.dart';
-import 'register/pages/pictures/pictures_page.dart';
 import 'package:strong_buddies_connect/chatList/chatList.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'matching/matching_page.dart';
 import 'shared/utils/navigation_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -116,8 +112,7 @@ class _MyAppState extends State<MyApp> {
           Routes.loginPage: (context) => LoginPage(),
           Routes.matchPage: (context) => UserInfoPage(),
           Routes.loginPagePhoneNumber: (context) => LoginWithPhoneNumberPage(),
-          Routes.registerPage: (context) => RegisterPageNew(),
-          Routes.picturePage: (context) => PicturesPage(),
+          Routes.registerPage: (context) => RegisterPageNew(),          
           Routes.chatListPage: (context) => ChatList()
         },
         theme: buildAppTheme());

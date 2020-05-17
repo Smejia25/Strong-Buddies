@@ -62,7 +62,10 @@ class _LoginWithPhoneNumberPageState extends State<LoginWithPhoneNumberPage> {
                         auth: _auth,
                         onSucessfulLogin: handleSucessfulLogin,
                         onCodeSent: (verificationId, [_]) {
-                          _verificationId = verificationId;
+                          setState(() {
+                            _verificationId = verificationId;
+                          });
+
                           _controller.jumpToPage(1);
                         }),
                     CodeForm(

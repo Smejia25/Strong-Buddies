@@ -28,12 +28,12 @@ class CurrentUser extends Buddy {
     preferTimeWorkout = json['preferTimeWorkout'];
     gymMemberShip = json['gymMemberShip'];
     pictures = castJsonPropertyToListToList<String>(json, 'pictures');
-    workoutTypes = json['workoutTypes'].cast<String>();
+    workoutTypes = castJsonPropertyToListToList(json,'workoutTypes');
     photoUrl = json['photoUrl'];
   }
 
   void fromPrivateJson(Map<String, dynamic> json) {
-    _targetGender = json['targetGender'].cast<String>();
+    _targetGender = castJsonPropertyToListToList(json,'targetGender');
     _email = json['email'];
     _name = json['name'];
   }
@@ -46,6 +46,7 @@ class CurrentUser extends Buddy {
     data['gymMemberShip'] = this.gymMemberShip;
     data['pictures'] = this.pictures;
     data['workoutTypes'] = this.workoutTypes;    
+    data['aboutMe'] = this.aboutMe;    
 
     return data;
   }
