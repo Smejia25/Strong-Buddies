@@ -40,7 +40,13 @@ class TriangleClipper extends CustomClipper<Path> {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar});
+  ChatScreenState(
+      {Key key,
+      @required this.peerId,
+      @required this.peerAvatar,
+      @required this.displayName});
+
+  String displayName;
 
   String peerId;
   String peerAvatar;
@@ -144,6 +150,12 @@ class ChatScreenState extends State<ChatScreen> {
           .collection(groupChatId)
           .document(DateTime.now().millisecondsSinceEpoch.toString());
 
+      var chatReference = Firestore.instance
+          .collection('users')
+          .document(id)
+          .collection('chattingWith')
+          .document(peerId);
+
       Firestore.instance.runTransaction((transaction) async {
         await transaction.set(
           documentReference,
@@ -153,6 +165,16 @@ class ChatScreenState extends State<ChatScreen> {
             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
             'content': content,
             'type': type
+          },
+        );
+      });
+      Firestore.instance.runTransaction((transaction) async {
+        await transaction.set(
+          chatReference,
+          {
+            'displayName': displayName,
+            'photoUrl': peerAvatar,
+            'lastMessage': content
           },
         );
       });

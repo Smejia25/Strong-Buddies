@@ -9,8 +9,13 @@ const PrimaryColor = const Color(0xFF151026);
 class Chat extends StatelessWidget {
   final String peerId;
   final String peerAvatar;
+  final String displayName;
 
-  Chat({Key key, @required this.peerId, @required this.peerAvatar})
+  Chat(
+      {Key key,
+      @required this.peerId,
+      @required this.peerAvatar,
+      @required this.displayName})
       : super(key: key);
 
   @override
@@ -66,6 +71,7 @@ class Chat extends StatelessWidget {
       body: new ChatScreen(
         peerId: peerId,
         peerAvatar: peerAvatar,
+        displayName: displayName,
       ),
     );
   }
@@ -74,11 +80,16 @@ class Chat extends StatelessWidget {
 class ChatScreen extends StatefulWidget {
   final String peerId;
   final String peerAvatar;
+  final String displayName;
 
-  ChatScreen({Key key, @required this.peerId, @required this.peerAvatar})
+  ChatScreen(
+      {Key key,
+      @required this.peerId,
+      @required this.peerAvatar,
+      @required this.displayName})
       : super(key: key);
 
   @override
-  State createState() =>
-      new ChatScreenState(peerId: peerId, peerAvatar: peerAvatar);
+  State createState() => new ChatScreenState(
+      peerId: peerId, peerAvatar: peerAvatar, displayName: displayName);
 }
