@@ -112,7 +112,7 @@ class ChatListState extends State<ChatList> {
                     stream: Firestore.instance
                         .collection('users')
                         .document(userData.data.uid)
-                        .collection('chattingWith')
+                        .collection('matches')
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
@@ -157,6 +157,50 @@ class ChatListState extends State<ChatList> {
         ],
       ),
     );
+  }
+
+  Widget buildContact(BuildContext context, DocumentSnapshot document) {
+    return Container(
+        child: SizedBox(
+      width: 100,
+      child: Column(
+        children: <Widget>[
+          Material(
+            child: document.data['photoUrl'] != null
+                ? CachedNetworkImage(
+                    placeholder: (context, url) => Container(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+                      ),
+                      width: 50.0,
+                      height: 50.0,
+                      padding: EdgeInsets.all(15.0),
+                    ),
+                    imageUrl: document.data['photoUrl'],
+                    width: 50.0,
+                    height: 50.0,
+                    fit: BoxFit.cover,
+                  )
+                : Icon(
+                    Icons.account_circle,
+                    size: 50.0,
+                    color: greyColor,
+                  ),
+            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            clipBehavior: Clip.hardEdge,
+          ),
+          Container(
+            child: Text(
+              '${document.data['displayName']}',
+              style: TextStyle(color: Color(0xFF4A4A4A), fontSize: 17),
+            ),
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+          )
+        ],
+      ),
+    ));
   }
 
   Widget buildItem(BuildContext context, DocumentSnapshot document) {
