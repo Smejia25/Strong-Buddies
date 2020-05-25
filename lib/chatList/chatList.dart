@@ -122,7 +122,6 @@ class ChatListState extends State<ChatList> {
                         );
                       } else {
                         return ListView.builder(
-                          padding: EdgeInsets.all(10.0),
                           itemBuilder: (context, index) => buildItem(
                               context, snapshot.data.documents[index]),
                           itemCount: snapshot.data.documents.length,
@@ -160,7 +159,7 @@ class ChatListState extends State<ChatList> {
 
   Widget buildItem(BuildContext context, DocumentSnapshot document) {
     return Container(
-      child: FlatButton(
+      child: OutlineButton(
         child: Row(
           children: <Widget>[
             Material(
@@ -194,16 +193,18 @@ class ChatListState extends State<ChatList> {
                   children: <Widget>[
                     Container(
                       child: Text(
-                        'Name: ${document.data['displayName']}',
-                        style: TextStyle(color: primaryColor),
+                        '${document.data['displayName']}',
+                        style:
+                            TextStyle(color: Color(0xFF4A4A4A), fontSize: 17),
                       ),
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                     ),
                     Container(
                       child: Text(
-                        'About me: ${document['aboutMe'] ?? 'Not available'}',
-                        style: TextStyle(color: primaryColor),
+                        '${document['lastMessage'] ?? 'Not available'}',
+                        style:
+                            TextStyle(color: Color(0xFFC1C0C9), fontSize: 15),
                       ),
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
@@ -225,12 +226,10 @@ class ChatListState extends State<ChatList> {
                       peerAvatar: document['photoUrl'],
                       displayName: document.data['displayName'])));
         },
-        color: greyColor2,
         padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
-      margin: EdgeInsets.only(bottom: 10.0, left: 5.0, right: 5.0),
     );
   }
 }
