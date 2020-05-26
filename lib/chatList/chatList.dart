@@ -123,11 +123,13 @@ class ChatListState extends State<ChatList> {
                           ),
                         );
                       } else {
-                        return ListView.builder(
-                          itemBuilder: (context, index) => buildItem(
+                        return Container(
+                            child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => buildContact(
                               context, snapshot.data.documents[index]),
                           itemCount: snapshot.data.documents.length,
-                        );
+                        ));
                       }
                     },
                   );
@@ -160,12 +162,13 @@ class ChatListState extends State<ChatList> {
   }
 
   Widget buildContact(BuildContext context, DocumentSnapshot document) {
-    return Container(
-        child: SizedBox(
-      width: 100,
+    return Padding(
+      padding: EdgeInsets.all(10.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Material(
+          
             child: document.data['photoUrl'] != null
                 ? CachedNetworkImage(
                     placeholder: (context, url) => Container(
@@ -181,6 +184,7 @@ class ChatListState extends State<ChatList> {
                     width: 50.0,
                     height: 50.0,
                     fit: BoxFit.cover,
+                  
                   )
                 : Icon(
                     Icons.account_circle,
@@ -190,17 +194,18 @@ class ChatListState extends State<ChatList> {
             borderRadius: BorderRadius.all(Radius.circular(25.0)),
             clipBehavior: Clip.hardEdge,
           ),
-          Container(
+          SizedBox(
+            width: 40, // hard coding child width
+
             child: Text(
               '${document.data['displayName']}',
-              style: TextStyle(color: Color(0xFF4A4A4A), fontSize: 17),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Color(0xFF4A4A4A), fontSize: 12),
             ),
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
           )
         ],
       ),
-    ));
+    );
   }
 
   Widget buildItem(BuildContext context, DocumentSnapshot document) {
