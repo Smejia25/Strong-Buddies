@@ -60,6 +60,6 @@ class _HomePageState extends State<HomePage>
                     size: 27,
                   )),
             ]),
-        body: widgets[current]);
+        body: IndexedStack(index: current, children: widgets));
   }
 }
