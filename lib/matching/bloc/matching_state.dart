@@ -28,12 +28,3 @@ class Loading extends MatchingState {
   @override
   List<Object> get props => [];
 }
-
-class MatchHappened extends MatchingState {
-  final MatchedBuddy buddy;
-
-  const MatchHappened(this.buddy);
-  
-  @override
-  List<Object> get props => [buddy];
-}

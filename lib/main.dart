@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strong_buddies_connect/home/home_page.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/location_service.dart';
@@ -110,7 +111,7 @@ class _MyAppState extends State<MyApp> {
         initialRoute: this.widget.startPage,
         routes: {
           Routes.loginPage: (context) => LoginPage(),
-          Routes.matchPage: (context) => UserInfoPage(),
+          Routes.matchPage: (context) => HomePage(),
           Routes.loginPagePhoneNumber: (context) => LoginWithPhoneNumberPage(),
           Routes.registerPage: (context) => RegisterPageNew(),          
           Routes.chatListPage: (context) => ChatList()

@@ -59,8 +59,8 @@ class Buddy {
     _displayName = json['displayName'];
     _preferTimeWorkout = json['preferTimeWorkout'];
     _gymMemberShip = json['gymMemberShip'];
-    _pictures = castJsonPropertyToListToList(json,'pictures');
-    _workoutTypes = castJsonPropertyToListToList(json,'workoutTypes');
+    _pictures = castJsonPropertyToListToList<String>(json,'pictures');
+    _workoutTypes = castJsonPropertyToListToList<String>(json,'workoutTypes');
     _photoUrl = json['photoUrl'];
     aboutMe = json['aboutMe'];
   }
