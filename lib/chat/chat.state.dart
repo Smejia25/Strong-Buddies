@@ -174,7 +174,8 @@ class ChatScreenState extends State<ChatScreen> {
           {
             'displayName': displayName,
             'photoUrl': peerAvatar,
-            'lastMessage': content
+            'lastMessage': content,
+            'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
           },
         );
       });
@@ -197,7 +198,7 @@ class ChatScreenState extends State<ChatScreen> {
                   constraints: BoxConstraints(maxWidth: 250),
                   child: Text(
                     document['content'],
-                    style: TextStyle(color: Color(0xFFFFFFFF)),
+                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 15),
                   ),
                   padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                   decoration: BoxDecoration(
@@ -296,7 +297,10 @@ class ChatScreenState extends State<ChatScreen> {
                         constraints: BoxConstraints(maxWidth: 250),
                         child: Text(
                           document['content'],
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
                         ),
                         padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                         decoration: BoxDecoration(
