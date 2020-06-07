@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
+import 'package:strong_buddies_connect/main.dart';
 
 class ChatList extends StatefulWidget {
   ChatList({Key key}) : super(key: key);
@@ -24,7 +25,6 @@ class ChatListState extends State<ChatList> {
   final TextEditingController textEditingController =
       new TextEditingController();
   final FocusNode focusNode = new FocusNode();
-
   String currentUserId;
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -147,7 +147,7 @@ class ChatListState extends State<ChatList> {
                                 ),
                               ),
                               Container(
-                                  height: 105,
+                                  height: 130,
                                   decoration:
                                       BoxDecoration(color: Colors.white),
                                   child: ListView.builder(
@@ -297,10 +297,12 @@ class ChatListState extends State<ChatList> {
                     ))
               ]),
               SizedBox(
-                width: 40, // hard coding child width
-
+                width: 60,
+                height: 50,
                 child: Text(
                   '${document.data['displayName']}',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Color(0xFF4A4A4A),
@@ -447,6 +449,9 @@ class ChatListState extends State<ChatList> {
             child: Container(
               height: 50,
               child: TextField(
+                onChanged: (text) {
+                  print("First text field: $text");
+                },
                 style: TextStyle(
                   color: Color(0xFF9B9B9B),
                   fontSize: 15.0,
