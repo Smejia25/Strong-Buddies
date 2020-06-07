@@ -3,6 +3,6 @@ class Routes {
   static final loginPagePhoneNumber = '/loginPagePhoneNumber';
   static final matchPage = '/matchPage';
   static final registerPage = '/registerPage';
-  static final picturePage = '/picturePage';
+  static final buddyProfile = '/buddyProfile';
   static final chatListPage = '/chatListPage';
 }

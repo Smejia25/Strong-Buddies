@@ -33,11 +33,12 @@ class RegisterBloc extends Bloc<CreateUser, RegisterState> {
       final user = event.user;
       user.token = await _firebaseMessaging.getToken();
       await _userCollection.setUserInfo(user);
+      if (user.uploadedPictures != null) {
+        final urlOfUploadedPics = await _userStorage
+            .uploadBatchOfImagesInAssetFormat(user.id, user.uploadedPictures);
 
-      final urlOfUploadedPics = await _userStorage
-          .uploadBatchOfImagesInAssetFormat(user.id, user.uploadedPictures);
-
-      await _userCollection.updateUserPictures(user.id, urlOfUploadedPics, 0);
+        await _userCollection.updateUserPictures(user.id, urlOfUploadedPics, 0);
+      }
 
       yield RegisterSucessful();
     } catch (e) {

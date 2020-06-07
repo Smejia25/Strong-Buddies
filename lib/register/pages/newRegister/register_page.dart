@@ -5,9 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/components/primary_button.dart';
 import 'package:strong_buddies_connect/shared/components/tappable_wrapper.dart';
+import 'package:strong_buddies_connect/shared/models/current_user_notifier.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
@@ -28,36 +30,61 @@ class RegisterPageNew extends StatefulWidget {
 class _RegisterPageNewState extends State<RegisterPageNew> {
   final RegistrationUser _user = RegistrationUser();
   final auth = AuthService();
+  CurrentUserNotifier userNotifier;
+  bool _isEditingProfile = false;
   Loader _loader;
 
   @override
   void initState() {
     super.initState();
     _loader = Loader(context);
-    auth.getCurrentUser().then((user) {
-      setState(() {
-        _user.email = user.email;
-        _user.displayName = _user.name = user.displayName;
-        _user.id = user.uid;
+    setUserInfo();
+  }
+
+  void setUserInfo() {
+    userNotifier = Provider.of<CurrentUserNotifier>(context, listen: false);
+    if (userNotifier.user == null)
+      auth.getCurrentUser().then((user) {
+        setState(() {
+          _user.email = user.email;
+          _user.displayName = _user.name = user.displayName;
+          _user.id = user.uid;
+        });
       });
-    });
+    else {
+      setState(() {
+        _isEditingProfile = true;
+        _user.email = userNotifier.user.email;
+        _user.name = userNotifier.user.name;
+        _user.gender = userNotifier.user.gender;
+        _user.displayName = userNotifier.user.displayName;
+        _user.aboutMe = userNotifier.user.aboutMe;
+        _user.targetGender = userNotifier.user.targetGender;
+        _user.preferTimeWorkout = userNotifier.user.preferTimeWorkout;
+        _user.gymMemberShip = userNotifier.user.gymMemberShip;
+        _user.workoutTypes = userNotifier.user.workoutTypes;
+        _user.pictures = userNotifier.user.pictures;
+      });
+    }
+  }
+
+  void logOut() async {
+    await auth.singOut();
+    userNotifier.user = null;
+    Navigator.pushNamedAndRemoveUntil(context, Routes.loginPage, (_) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-            color: Color(0xff262628),
-            onPressed: () async {
-              await auth.singOut();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.loginPage, (_) => false);
-            }),
+        leading: _isEditingProfile
+            ? Container()
+            : BackButton(color: Color(0xff262628), onPressed: logOut),
         brightness: Brightness.light,
         backgroundColor: Color(0xffEAEAEA),
         title: Text(
-          'Register',
+          _isEditingProfile ? 'Profile' : 'Register',
           style: TextStyle(
               color: Color(0xff262628),
               fontSize: ScreenUtil().setSp(17),
@@ -82,16 +109,22 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
                     .showSnackBar(SnackBar(content: Text(state.error)));
               } else if (state is RegisterSucessful) {
                 _loader.dismissLoader();
-                Navigator.pushNamedAndRemoveUntil(
-                    context, Routes.matchPage, (_) => false);
+                userNotifier.user = _user;
+                Scaffold.of(context)
+                    .showSnackBar(SnackBar(content: Text('Changes Saved')));
               }
             },
             child: Container(
               child: ListView(
                 children: <Widget>[
                   UploadPictures(
+                      pictures: _user.pictures,
+                      isEditingExistingProfile: _isEditingProfile,
                       onChanged: (assets) => _user.uploadedPictures = assets),
-                  UserForm(user: _user)
+                  UserForm(
+                      user: _user,
+                      isEditingExistingProfile: _isEditingProfile,
+                      onLogOut: logOut)
                 ],
               ),
             ),
@@ -103,8 +136,15 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
 }
 
 class UserForm extends StatefulWidget {
+  final VoidCallback onLogOut;
   final RegistrationUser user;
-  const UserForm({Key key, this.user}) : super(key: key);
+  final bool isEditingExistingProfile;
+  const UserForm({
+    Key key,
+    this.user,
+    this.isEditingExistingProfile,
+    this.onLogOut,
+  }) : super(key: key);
 
   @override
   _UserFormState createState() => _UserFormState();
@@ -124,6 +164,18 @@ class _UserFormState extends State<UserForm> {
         user.workoutTypes != null &&
         user.displayName != null &&
         user.uploadedPictures != null;
+  }
+
+  bool isUserValidForEdit() {
+    final user = widget.user;
+    return user.name != null &&
+        user.email != null &&
+        user.preferTimeWorkout != null &&
+        user.gender != null &&
+        user.gymMemberShip != null &&
+        user.targetGender != null &&
+        user.workoutTypes != null &&
+        user.displayName != null;
   }
 
   @override
@@ -169,6 +221,7 @@ class _UserFormState extends State<UserForm> {
               onSaved: (val) => widget.user.displayName = val,
             ),
             RegisterInputForm(
+              initialValue: widget.user.aboutMe,
               hint: 'Tell us about yourself',
               label: 'About you',
               isMultiline: true,
@@ -178,6 +231,7 @@ class _UserFormState extends State<UserForm> {
             ),
             RegisterSelectForm(
               hint: 'Let us know your gender',
+              previouslySelected: [widget.user.gender],
               onChange: (List<String> selectedOptions) {
                 try {
                   widget.user.gender = selectedOptions.first;
@@ -186,10 +240,11 @@ class _UserFormState extends State<UserForm> {
                 }
               },
               label: 'What is your gender?',
-              options: ['Women', 'Man', 'Others'],
+              options: ['Woman', 'Man', 'Other'],
             ),
             RegisterSelectForm(
               hint: 'What genders are you looking for?',
+              previouslySelected: widget.user.targetGender,
               allowMultipleSelect: true,
               onChange: (List<String> selectedOptions) {
                 widget.user.targetGender =
@@ -199,6 +254,7 @@ class _UserFormState extends State<UserForm> {
               options: ['Women', 'Man', 'Others'],
             ),
             RegisterSelectForm(
+              previouslySelected: [widget.user.preferTimeWorkout],
               onChange: (List<String> selectedOptions) {
                 try {
                   widget.user.preferTimeWorkout = selectedOptions.first;
@@ -210,6 +266,7 @@ class _UserFormState extends State<UserForm> {
               options: ['Morning', 'Midday', 'Night'],
             ),
             RegisterSelectForm(
+              previouslySelected: [widget.user.gymMemberShip],
               onChange: (List<String> selectedOptions) {
                 try {
                   widget.user.gymMemberShip = selectedOptions.first;
@@ -222,6 +279,7 @@ class _UserFormState extends State<UserForm> {
             ),
             RegisterSelectForm(
               allowMultipleSelect: true,
+              previouslySelected: widget.user.workoutTypes,
               onChange: (List<String> selectedOptions) {
                 widget.user.workoutTypes =
                     selectedOptions.length == 0 ? null : selectedOptions;
@@ -252,25 +310,66 @@ class _UserFormState extends State<UserForm> {
                 "Rowing"
               ],
             ),
-            PrimaryButton.text(
-                text: 'Register',
-                onTap: () {
-                  if (!form.currentState.validate()) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            'All the fields are not filled, please fill them all and select the pictures')));
-                    return;
-                  }
-                  form.currentState.save();
-                  if (!isUserValid())
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            'All the fields are not filled, please fill them all and select the pictures')));
-                  else {
-                    final bloc = BlocProvider.of<RegisterBloc>(context);
-                    bloc.add(CreateUser(widget.user));
-                  }
-                })
+            if (!widget.isEditingExistingProfile)
+              PrimaryButton.text(
+                  text: 'Register',
+                  onTap: () {
+                    if (!form.currentState.validate()) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              'All the fields are not filled, please fill them all and select the pictures')));
+                      return;
+                    }
+                    form.currentState.save();
+                    if (!isUserValid())
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              'All the fields are not filled, please fill them all and select the pictures')));
+                    else {
+                      final bloc = BlocProvider.of<RegisterBloc>(context);
+                      bloc.add(CreateUser(widget.user));
+                    }
+                  })
+            else
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    FlatButton(
+                      onPressed: widget.onLogOut,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(22),
+                          side: BorderSide(color: Color(0xffFF8960))),
+                      color: Colors.white,
+                      child: Container(
+                          child: Center(
+                            child: Text(
+                              'Log Out',
+                              style: TextStyle(color: Color(0xffFF8960)),
+                            ),
+                          ),
+                          height: ScreenUtil().setHeight(48)),
+                    ),
+                    // PrimaryButton.text(text: 'Log Out', onTap: widget.onLogOut),
+                    PrimaryButton.text(
+                        text: 'Save Changes',
+                        onTap: () {
+                          if (!form.currentState.validate()) {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    'All the fields are not filled, please fill them all and select the pictures')));
+                            return;
+                          }
+                          form.currentState.save();
+                          if (!isUserValidForEdit())
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    'All the fields are not filled, please fill them all and select the pictures')));
+                          else {
+                            final bloc = BlocProvider.of<RegisterBloc>(context);
+                            bloc.add(CreateUser(widget.user));
+                          }
+                        })
+                  ])
           ],
         ),
       ),
@@ -284,6 +383,7 @@ class RegisterSelectForm extends StatefulWidget {
   final List<String> options;
   final String label;
   final String hint;
+  final List<String> previouslySelected;
 
   const RegisterSelectForm({
     Key key,
@@ -292,6 +392,7 @@ class RegisterSelectForm extends StatefulWidget {
     @required this.onChange,
     this.label,
     this.hint,
+    this.previouslySelected = const [],
   }) : super(key: key);
 
   @override
@@ -300,6 +401,12 @@ class RegisterSelectForm extends StatefulWidget {
 
 class _RegisterSelectFormState extends State<RegisterSelectForm> {
   List<String> selected = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selected = List.from(widget.previouslySelected);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -526,10 +633,14 @@ class _FormOptionWrapperState extends State<FormOptionWrapper> {
 
 class UploadPictures extends StatefulWidget {
   final void Function(List<Asset>) onChanged;
+  final bool isEditingExistingProfile;
+  final List<String> pictures;
 
   const UploadPictures({
     Key key,
     this.onChanged,
+    this.isEditingExistingProfile,
+    this.pictures,
   }) : super(key: key);
 
   @override
@@ -583,22 +694,7 @@ class _UploadPicturesState extends State<UploadPictures> {
                         const StaggeredTile.count(1, 1),
                         const StaggeredTile.count(1, 1),
                       ],
-                      children: _picturesSelectedFromGallery != null &&
-                              _picturesSelectedFromGallery.isNotEmpty
-                          ? _picturesSelectedFromGallery
-                              .map(
-                                (e) => ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: AssetThumb(
-                                    quality: 100,
-                                    asset: e,
-                                    height: 100,
-                                    width: 100,
-                                  ),
-                                ),
-                              )
-                              .toList()
-                          : examplePictures,
+                      children: getPicturesToShow(),
                     ),
                     TappableWrapper(
                       onTap: () async {
@@ -614,8 +710,9 @@ class _UploadPicturesState extends State<UploadPictures> {
                           print(e);
                         }
                       },
-                      child: _picturesSelectedFromGallery != null &&
-                              _picturesSelectedFromGallery.isNotEmpty
+                      child: (_picturesSelectedFromGallery != null &&
+                                  _picturesSelectedFromGallery.isNotEmpty) ||
+                              widget.isEditingExistingProfile
                           ? Container()
                           : Container(
                               child: Center(
@@ -669,5 +766,29 @@ class _UploadPicturesState extends State<UploadPictures> {
         SizedBox(height: ScreenUtil().setHeight(15)),
       ],
     );
+  }
+
+  List<Widget> getPicturesToShow() {
+    if (_picturesSelectedFromGallery != null &&
+        _picturesSelectedFromGallery.isNotEmpty)
+      return _picturesSelectedFromGallery
+          .map(
+            (e) => ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: AssetThumb(
+                quality: 100,
+                asset: e,
+                height: 100,
+                width: 100,
+              ),
+            ),
+          )
+          .toList();
+    else if (widget.pictures != null)
+      return widget.pictures
+          .map((e) => Image.network(e, fit: BoxFit.cover))
+          .toList();
+    else
+      return examplePictures;
   }
 }
