@@ -9,22 +9,26 @@ class MatchButton extends StatelessWidget {
 
   final VoidCallback onPressed;
   final Icon icon;
-  final _size = 70.0;
+  final _size = 60.0;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: _size,
+      width: _size,      
       height: _size,
-      child: Material(
-        elevation: 1,
-        color: Colors.white,
-        shape: CircleBorder(),
-        child: IconButton(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(_size),
+        child: Material(
+          elevation: 2,
+          shape: CircleBorder(),
+          color: Colors.white,
+          child: IconButton(
             icon: icon,
-            iconSize: 48,
+            iconSize: 35,
             padding: EdgeInsets.zero,
-            onPressed: onPressed),
+            onPressed: onPressed,
+          ),
+        ),
       ),
     );
   }

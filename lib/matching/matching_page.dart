@@ -29,13 +29,11 @@ class MatchComponent extends StatefulWidget {
 }
 
 class _MatchComponentState extends State<MatchComponent> {
-  Loader _loader;
   final _bloc = MatchingBloc(UserCollection(), AuthService());
 
   @override
   void initState() {
     super.initState();
-    _loader = Loader(context);
     _bloc.add(RequestBuddies());
   }
 
@@ -86,19 +84,6 @@ class _MatchComponentState extends State<MatchComponent> {
                         return Stack(
                           fit: StackFit.expand,
                           children: <Widget>[
-                            /* Transform.scale(
-                              scale: 0.9,
-                              child: Transform.translate(
-                                offset: Offset(0, ScreenUtil().setHeight(50)),
-                                child: Opacity(
-                                  opacity: 0.8,
-                                  child: MatchCard(
-                                      onMatch: (buddy) {},
-                                      onReject: (buddy) {},
-                                      potentialMatch: buddy),
-                                ),
-                              ),
-                            ), */
                             MatchCard(
                               onMatch: (_) => _bloc.add(MatchWithBuddy()),
                               onReject: (_) => _bloc.add(RejectBuddy()),

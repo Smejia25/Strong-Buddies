@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/chat/chat.state.dart';
-import 'package:strong_buddies_connect/buddyDetail/buddyDetail.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:strong_buddies_connect/chat/const.dart';
 
@@ -38,13 +37,13 @@ class Chat extends StatelessWidget {
               padding: EdgeInsets.only(right: 20.0, top: 8, bottom: 8),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
+                  /* Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => BuddyDetail(
                                 peerId: this.peerId,
                                 peerAvatar: this.peerAvatar,
-                              )));
+                              ))); */
                 },
                 child: Material(
                   child: CachedNetworkImage(

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:strong_buddies_connect/chatList/chatList.dart';
 import 'package:strong_buddies_connect/matching/matching_page.dart';
 import 'package:strong_buddies_connect/profile/profile_page.dart';
+import 'package:strong_buddies_connect/register/pages/newRegister/register_page.dart';
+import 'package:strong_buddies_connect/shared/models/current_user_notifier.dart';
+import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
+import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -11,10 +17,27 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> {
   int current = 0;
-  final widgets = [MatchComponent(), ChatList(), ProfilePage()];
+  final widgets = [MatchComponent(), ChatList(), RegisterPageNew()];
+
+  @override
+  void initState() {
+    super.initState();
+    setCurrentUser();
+  }
+
+  void setCurrentUser() {
+    final userService = AuthService();
+    final userRespository = UserCollection();
+    userService.getCurrentUser().then((user) async {
+      final userInfo = await userRespository.getCurrentUserInfo(user.uid);
+      final userNotifier =
+          Provider.of<CurrentUserNotifier>(context, listen: false);
+      userNotifier.user = userInfo;
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
