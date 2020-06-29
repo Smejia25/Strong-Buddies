@@ -1,17 +1,18 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
 import 'package:strong_buddies_connect/chat/const.dart';
-import 'package:intl/intl.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:strong_buddies_connect/chatList/components/buildChatItem.dart';
+import 'package:strong_buddies_connect/chatList/components/buildContact.dart';
+import 'package:strong_buddies_connect/shared/components/circle_image.dart';
+import 'package:strong_buddies_connect/shared/components/status_circle.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
-import 'package:strong_buddies_connect/main.dart';
 
 class ChatList extends StatefulWidget {
   ChatList({Key key}) : super(key: key);
@@ -29,6 +30,7 @@ class ChatListState extends State<ChatList> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final auth = AuthService();
+  
 
   bool isLoading = false;
   List<Choice> choices = const <Choice>[
@@ -39,12 +41,18 @@ class ChatListState extends State<ChatList> {
   @override
   void initState() {
     super.initState();
+        textEditingController.addListener(_printLatestValue);
+
   }
 
   void onItemMenuPress(Choice choice) {
     if (choice.title == 'Log out') {
       handleSignOut();
     } else {}
+  }
+
+  _printLatestValue() {
+    print("Second text field: ${textEditingController.text}");
   }
 
   Future<bool> onBackPress() {
@@ -80,32 +88,6 @@ class ChatListState extends State<ChatList> {
               fontSize: 25),
         ),
         centerTitle: false,
-        /*    actions: <Widget>[
-          PopupMenuButton<Choice>(
-            onSelected: onItemMenuPress,
-            itemBuilder: (BuildContext context) {
-              return choices.map((Choice choice) {
-                return PopupMenuItem<Choice>(
-                    value: choice,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          choice.icon,
-                          color: primaryColor,
-                        ),
-                        Container(
-                          width: 10.0,
-                        ),
-                        Text(
-                          choice.title,
-                          style: TextStyle(color: primaryColor),
-                        ),
-                      ],
-                    ));
-              }).toList();
-            },
-          ),
-        ], */
       ),
       body: Stack(
         children: <Widget>[
@@ -231,208 +213,6 @@ class ChatListState extends State<ChatList> {
                 : Container(),
           )
         ],
-      ),
-    );
-  }
-
-  Widget buildContact(BuildContext context, DocumentSnapshot document) {
-    return GestureDetector(
-        onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Chat(
-                      peerId: document.documentID,
-                      peerAvatar: document['photoUrl'],
-                      displayName: document.data['displayName'])),
-            ),
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Stack(children: <Widget>[
-                Container(
-                    margin: const EdgeInsets.only(bottom: 5.0),
-                    child: Material(
-                      child: document.data['photoUrl'] != null
-                          ? CachedNetworkImage(
-                              placeholder: (context, url) => Container(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.0,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(themeColor),
-                                ),
-                                width: 50.0,
-                                height: 50.0,
-                                padding: EdgeInsets.all(15.0),
-                              ),
-                              imageUrl: document.data['photoUrl'],
-                              width: 50.0,
-                              height: 50.0,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(
-                              Icons.account_circle,
-                              size: 50.0,
-                              color: greyColor,
-                            ),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                      clipBehavior: Clip.antiAlias,
-                    )),
-                Positioned(
-                    bottom: 8,
-                    left: 40,
-                    child: ClipOval(
-                      child: Material(
-                        color: Colors.lightGreenAccent, // button color
-                        child: InkWell(
-                          splashColor: Colors.red, // inkwell color
-                          child: SizedBox(
-                            width: 10,
-                            height: 10,
-                          ),
-                          onTap: () {},
-                        ),
-                      ),
-                    ))
-              ]),
-              SizedBox(
-                width: 60,
-                height: 50,
-                child: Text(
-                  '${document.data['displayName']}',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Color(0xFF4A4A4A),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500),
-                ),
-              )
-            ],
-          ),
-        ));
-  }
-
-  Widget buildItem(BuildContext context, DocumentSnapshot document) {
-    double c_width = MediaQuery.of(context).size.width * 0.45;
-
-    return Container(
-      child: OutlineButton(
-        child: Row(
-          children: <Widget>[
-            Stack(children: <Widget>[
-              Material(
-                child: document.data['photoUrl'] != null
-                    ? CachedNetworkImage(
-                        placeholder: (context, url) => Container(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1.0,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(themeColor),
-                          ),
-                          width: 50.0,
-                          height: 50.0,
-                          padding: EdgeInsets.all(15.0),
-                        ),
-                        imageUrl: document.data['photoUrl'],
-                        width: 50.0,
-                        height: 50.0,
-                        fit: BoxFit.cover,
-                      )
-                    : Icon(
-                        Icons.account_circle,
-                        size: 50.0,
-                        color: greyColor,
-                      ),
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                clipBehavior: Clip.hardEdge,
-              ),
-              Positioned(
-                  bottom: 5,
-                  left: 40,
-                  child: ClipOval(
-                    child: Material(
-                      color: Colors.lightGreenAccent, // button color
-                      child: InkWell(
-                        splashColor: Colors.red, // inkwell color
-                        child: SizedBox(
-                          width: 10,
-                          height: 10,
-                        ),
-                        onTap: () {},
-                      ),
-                    ),
-                  ))
-            ]),
-            Flexible(
-              child: Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1.0, color: Color(0xFFEFEFEF)),
-                  ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                            child: Container(
-                          child: Text(
-                            '${document.data['displayName']}',
-                            style: TextStyle(
-                                color: Color(0xFF4A4A4A), fontSize: 17),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 5.0),
-                        )),
-                        ConstrainedBox(
-                          constraints: new BoxConstraints(
-                            minWidth: 80,
-                          ),
-                          child: Text(
-                            DateFormat('dd MMM kk:mm').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    int.parse(document['timestamp']))),
-                            style: TextStyle(
-                              color: greyColor,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    Container(
-                      child: Text(
-                        '${document['lastMessage'] ?? 'Not available'}',
-                        style:
-                            TextStyle(color: Color(0xFFC1C0C9), fontSize: 13),
-                      ),
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                    )
-                  ],
-                ),
-                margin: EdgeInsets.only(left: 20.0),
-              ),
-            ),
-          ],
-        ),
-        onPressed: () {
-          print(document.documentID);
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Chat(
-                      peerId: document.documentID,
-                      peerAvatar: document['photoUrl'],
-                      displayName: document.data['displayName'])));
-        },
-        padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
-        borderSide: BorderSide(style: BorderStyle.none),
       ),
     );
   }
