@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
 import 'package:strong_buddies_connect/chat/const.dart';
 
@@ -30,7 +31,6 @@ class ChatListState extends State<ChatList> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final auth = AuthService();
-  
 
   bool isLoading = false;
   List<Choice> choices = const <Choice>[
@@ -41,8 +41,7 @@ class ChatListState extends State<ChatList> {
   @override
   void initState() {
     super.initState();
-        textEditingController.addListener(_printLatestValue);
-
+    textEditingController.addListener(_printLatestValue);
   }
 
   void onItemMenuPress(Choice choice) {
@@ -71,6 +70,7 @@ class ChatListState extends State<ChatList> {
     this.setState(() {
       isLoading = false;
     });
+    SystemNavigator.pop();
   }
 
   @override
@@ -88,6 +88,32 @@ class ChatListState extends State<ChatList> {
               fontSize: 25),
         ),
         centerTitle: false,
+        actions: <Widget>[
+          PopupMenuButton<Choice>(
+            onSelected: onItemMenuPress,
+            itemBuilder: (BuildContext context) {
+              return choices.map((Choice choice) {
+                return PopupMenuItem<Choice>(
+                    value: choice,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          choice.icon,
+                          color: primaryColor,
+                        ),
+                        Container(
+                          width: 10.0,
+                        ),
+                        Text(
+                          choice.title,
+                          style: TextStyle(color: primaryColor),
+                        ),
+                      ],
+                    ));
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: <Widget>[
