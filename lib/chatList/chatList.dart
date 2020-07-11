@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strong_buddies_connect/authentication/login/login_page.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
 import 'package:strong_buddies_connect/chat/const.dart';
 
@@ -70,7 +71,8 @@ class ChatListState extends State<ChatList> {
     this.setState(() {
       isLoading = false;
     });
-    SystemNavigator.pop();
+    Navigator.push(
+        context, new MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   @override

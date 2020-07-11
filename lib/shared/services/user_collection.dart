@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:strong_buddies_connect/matching/models/matched_buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
+import 'package:strong_buddies_connect/shared/models/match_model.dart';
 
 class UserCollection {
   final Firestore _firestoreInstance = Firestore.instance;
@@ -18,6 +19,17 @@ class UserCollection {
         .collection('private_info')
         .document('private')
         .setData(user.privateInfotoJson());
+  }
+
+  Stream<List<Match>> matches() {
+    return _firestoreInstance
+        .collection(_collection)
+        .document(currentUserInfo.id)
+        .collection('matches')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.documents.map((doc) => Match.fromSnapshot(doc)).toList();
+    });
   }
 
   Future<CurrentUser> getCurrentUserInfo(String id) async {
