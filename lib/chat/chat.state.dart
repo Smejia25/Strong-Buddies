@@ -125,8 +125,9 @@ class ChatScreenState extends State<ChatScreen> {
     StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
     StorageUploadTask uploadTask = reference.putFile(imageFile);
     StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+
     storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-      imageUrl = downloadUrl;
+      imageUrl = downloadUrl.toString().replaceAll('?', '_200x200?');
       setState(() {
         isLoading = false;
         onSendMessage(imageUrl, 1);
@@ -174,7 +175,7 @@ class ChatScreenState extends State<ChatScreen> {
           {
             'displayName': displayName,
             'photoUrl': peerAvatar,
-            'lastMessage': content,
+            'lastMessage': type == 1 ? '${displayName} sent an image' : content,
             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
           },
         );

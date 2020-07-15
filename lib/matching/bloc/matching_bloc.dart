@@ -18,7 +18,7 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
   List<Buddy> _buddies = [];
   int _init = 0;
   final UserCollection userCollection;
-  final AuthService auth;  
+  final AuthService auth;
 
   MatchingBloc(this.userCollection, this.auth);
 

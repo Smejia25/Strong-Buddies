@@ -21,10 +21,10 @@ class UserCollection {
         .setData(user.privateInfotoJson());
   }
 
-  Stream<List<Match>> matches() {
+  Stream<List<Match>> matches(userId) {
     return _firestoreInstance
         .collection(_collection)
-        .document(currentUserInfo.id)
+        .document(userId)
         .collection('matches')
         .snapshots()
         .map((snapshot) {

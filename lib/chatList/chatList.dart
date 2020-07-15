@@ -5,16 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/authentication/login/login_page.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
 import 'package:strong_buddies_connect/chat/const.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:strong_buddies_connect/chatList/bloc/chatlist_bloc.dart';
 import 'package:strong_buddies_connect/chatList/components/buildChatItem.dart';
 import 'package:strong_buddies_connect/chatList/components/buildContact.dart';
 import 'package:strong_buddies_connect/shared/components/circle_image.dart';
 import 'package:strong_buddies_connect/shared/components/status_circle.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
 class ChatList extends StatefulWidget {
   ChatList({Key key}) : super(key: key);
@@ -32,6 +35,7 @@ class ChatListState extends State<ChatList> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final auth = AuthService();
+  final _bloc = ChatlistBloc(UserCollection(), AuthService());
 
   bool isLoading = false;
   List<Choice> choices = const <Choice>[
@@ -42,6 +46,7 @@ class ChatListState extends State<ChatList> {
   @override
   void initState() {
     super.initState();
+    _bloc.add(LoadMatches());
     textEditingController.addListener(_printLatestValue);
   }
 
@@ -53,6 +58,7 @@ class ChatListState extends State<ChatList> {
 
   _printLatestValue() {
     print("Second text field: ${textEditingController.text}");
+    _bloc.add(UpdateFilter(textEditingController.text));
   }
 
   Future<bool> onBackPress() {
@@ -124,60 +130,44 @@ class ChatListState extends State<ChatList> {
               child: Column(
             children: <Widget>[
               buildInput(),
-              FutureBuilder<FirebaseUser>(
-                future: auth.getCurrentUser(),
-                builder: (context, userData) {
-                  if (userData.hasData)
-                    return StreamBuilder(
-                      stream: Firestore.instance
-                          .collection('users')
-                          .document(userData.data.uid)
-                          .collection('matches')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(themeColor),
-                            ),
-                          );
-                        } else {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Container(
-                                decoration: BoxDecoration(color: Colors.white),
-                                padding: EdgeInsets.all(15),
-                                child: Text(
-                                  'MATCHES',
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                      color: Color(0xFFC1C0C9), fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                  height: 130,
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) =>
-                                        buildContact(context,
-                                            snapshot.data.documents[index]),
-                                    itemCount: snapshot.data.documents.length,
-                                  ))
-                            ],
-                          );
-                        }
-                      },
-                    );
-                  else
+              BlocBuilder<ChatlistBloc, ChatlistState>(
+                bloc: _bloc,
+                builder: (context, state) {
+                  if (state is ChatlistLoading) {
                     return Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(themeColor),
                       ),
                     );
+                  } else if (state is ChatlistLoaded) {
+                    final matchesList = state.filteredMatches;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(color: Colors.white),
+                          padding: EdgeInsets.all(15),
+                          child: Text(
+                            'MATCHES',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Color(0xFFC1C0C9), fontSize: 15),
+                          ),
+                        ),
+                        Container(
+                            height: 130,
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) =>
+                                  buildContact(context, matchesList[index]),
+                              itemCount: matchesList.length,
+                            ))
+                      ],
+                    );
+                  } else {
+                    return SizedBox();
+                  }
                 },
               ),
               Container(
