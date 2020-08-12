@@ -1,0 +1,33 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    testfairy(
+      api_key: "0f220c37a34c643be3179cdbd1b27bf11ff8330e",
+      apk: "../build/app/outputs/flutter-apk/app-release.apk",
+      comment: "Build #{lane_context[SharedValues::BUILD_NUMBER]}",
+    )
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+end

@@ -5,11 +5,17 @@ abstract class MatchingEvent extends Equatable {
 }
 
 class RejectBuddy extends MatchingEvent {
+  final Buddy buddy;
+
+  RejectBuddy(this.buddy);
   @override
   List<Object> get props => [];
 }
 
 class MatchWithBuddy extends MatchingEvent {
+  final Buddy buddy;
+
+  MatchWithBuddy(this.buddy);
   @override
   List<Object> get props => [];
 }

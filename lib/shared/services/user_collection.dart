@@ -34,9 +34,8 @@ class UserCollection {
         .document(userId)
         .collection('matches')
         .snapshots()
-        .map((snapshot) {
-      return snapshot.documents.map((doc) => Match.fromSnapshot(doc)).toList();
-    });
+        .map((snapshot) =>
+            snapshot.documents.map((doc) => Match.fromSnapshot(doc)).toList());
   }
 
   Future<CurrentUser> getCurrentUserInfo(String id) async {
@@ -92,7 +91,7 @@ class UserCollection {
   }
 
   Future<List<Buddy>> getBuddies() async {
-    var collectionReference = _firestoreInstance.collection(_collection);
+    /*  var collectionReference = _firestoreInstance.collection(_collection);
     var geoRef = geo.collection(collectionRef: collectionReference);
 
     final GeoFirePoint centerGeoPoint =
@@ -110,7 +109,13 @@ class UserCollection {
             Buddy.fromJson(document.data)..id = document.documentID)
         .toList();
     print(buddies.length);
-    return buddies;
+    return buddies; */
+    return (await _firestoreInstance.collection(_collection).getDocuments())
+        .documents
+        .where((doc) => doc.exists)
+        .map((document) =>
+            Buddy.fromJson(document.data)..id = document.documentID)
+        .toList();
   }
 
   Future<List<String>> getAlreadyAnalizedBuddies(String userId) async {

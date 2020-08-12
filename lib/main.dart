@@ -1,4 +1,7 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:strong_buddies_connect/home/home_page.dart';
 import 'package:strong_buddies_connect/routes.dart';
@@ -19,31 +22,52 @@ import 'shared/utils/navigation_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:location/location.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
-
+import 'package:get/get.dart';
 import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final result = await handleInitialConfig();
+  Get.put(AuthService());
+  Get.put(UserCollection());
+  Get.put(FirebaseMessaging());
+  Get.put(UserCollection());
 
-  runApp(MaterialApp(
-      home: MyApp(startPage: result['route'], user: result['user'])));
+  final location = LocationService();
+  final result = await handleInitialConfig(location);
+  updateLocation(location);
+
+  runApp(
+    GetMaterialApp(
+      locale: ui.window.locale,
+      home: MyApp(
+        startPage: result['route'],
+        user: result['user'],
+      ),
+    ),
+  );
 }
 
-Future<Map<String, Object>> handleInitialConfig() async {
-  final result =
-      await Future.wait<dynamic>([askToTurnOnGps(), getInitialPage()]);
+Future<Map<String, Object>> handleInitialConfig(
+    LocationService location) async {
+  final result = await Future.wait<dynamic>([
+    askToTurnOnGps(location),
+    getInitialPage(),
+  ]);
   return result[1];
 }
 
-Future<void> askToTurnOnGps() async {
-  final location = LocationService();
+updateLocation(LocationService location) async {
   final auth = AuthService();
   final userRepository = UserCollection();
   final _locationData = await location.getPermissions();
   final user = await auth.getCurrentUser();
   if (user != null)
     await userRepository.updateLocation(user.uid, _locationData.data);
+}
+
+Future<void> askToTurnOnGps(LocationService location) async {
+  final location = LocationService();
+  return location.canLocationServiceBeUsed();
 }
 
 Future<Map<String, Object>> getInitialPage() async {
@@ -82,9 +106,7 @@ class _MyAppState extends State<MyApp> {
         showDialog(
           context: context,
           builder: (context) {
-            return MatchDialog(
-              buddy: data,
-            );
+            return MatchDialog(buddy: data);
           },
         );
       } catch (e) {

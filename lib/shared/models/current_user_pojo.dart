@@ -5,7 +5,7 @@ import 'buddy_pojo.dart';
 class CurrentUser extends Buddy {
   List<String> _targetGender;
   String _email;
-  String _name;  
+  String _name;
   String _token;
 
   CurrentUser({List<String> targetGender, String email, String name}) {
@@ -28,12 +28,13 @@ class CurrentUser extends Buddy {
     preferTimeWorkout = json['preferTimeWorkout'];
     gymMemberShip = json['gymMemberShip'];
     pictures = castJsonPropertyToListToList<String>(json, 'pictures');
-    workoutTypes = castJsonPropertyToListToList(json,'workoutTypes');
+    workoutTypes = castJsonPropertyToListToList(json, 'workoutTypes');
     photoUrl = json['photoUrl'];
+    aboutMe = json['aboutMe'];
   }
 
   void fromPrivateJson(Map<String, dynamic> json) {
-    _targetGender = castJsonPropertyToListToList(json,'targetGender');
+    _targetGender = castJsonPropertyToListToList(json, 'targetGender');
     _email = json['email'];
     _name = json['name'];
   }
@@ -45,8 +46,8 @@ class CurrentUser extends Buddy {
     data['preferTimeWorkout'] = this.preferTimeWorkout;
     data['gymMemberShip'] = this.gymMemberShip;
     data['pictures'] = this.pictures;
-    data['workoutTypes'] = this.workoutTypes;    
-    data['aboutMe'] = this.aboutMe;    
+    data['workoutTypes'] = this.workoutTypes;
+    data['aboutMe'] = this.aboutMe;
 
     return data;
   }

@@ -86,7 +86,7 @@ class ChatListState extends State<ChatList> {
     return Scaffold(
       appBar: AppBar(
         bottomOpacity: 0.0,
-        elevation: 0.0,
+        elevation: 0.8,
         backgroundColor: Color(0xFFF8F8F8),
         title: Text(
           'Message',

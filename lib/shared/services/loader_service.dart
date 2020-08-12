@@ -10,7 +10,7 @@ class Loader {
     await _pr.show();
   }
 
-  void dismissLoader() {
-    _pr.hide();
+  Future<bool> dismissLoader() {
+    return _pr.hide();
   }
 }

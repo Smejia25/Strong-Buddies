@@ -1,7 +1,7 @@
 import 'package:strong_buddies_connect/shared/utils/models_util.dart';
 
 class Buddy {
-  String _id;
+  String id;
   String _gender;
   String _displayName;
   String _preferTimeWorkout;
@@ -26,7 +26,7 @@ class Buddy {
     this._gymMemberShip = gymMemberShip;
     this._pictures = pictures;
     this._workoutTypes = workoutTypes;
-    this._id = id;
+    this.id = id;
   }
 
   String get gender => _gender;
@@ -48,9 +48,6 @@ class Buddy {
   List<String> get workoutTypes => _workoutTypes;
   set workoutTypes(List<String> workoutTypes) => _workoutTypes = workoutTypes;
 
-  String get id => _id;
-  set id(String id) => _id = id;
-
   String get photoUrl => _photoUrl;
   set photoUrl(String photoUrl) => _photoUrl = photoUrl;
 
@@ -59,8 +56,8 @@ class Buddy {
     _displayName = json['displayName'];
     _preferTimeWorkout = json['preferTimeWorkout'];
     _gymMemberShip = json['gymMemberShip'];
-    _pictures = castJsonPropertyToListToList<String>(json,'pictures');
-    _workoutTypes = castJsonPropertyToListToList<String>(json,'workoutTypes');
+    _pictures = castJsonPropertyToListToList<String>(json, 'pictures');
+    _workoutTypes = castJsonPropertyToListToList<String>(json, 'workoutTypes');
     _photoUrl = json['photoUrl'];
     aboutMe = json['aboutMe'];
   }

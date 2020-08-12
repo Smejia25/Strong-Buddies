@@ -24,7 +24,7 @@ class BuddyDetail extends StatelessWidget {
                 Container(
                   height: ScreenUtil().setHeight(567),
                   child: Hero(
-                    tag: 'images',
+                    tag: 'images_${potentialBuddy.id}',
                     child: PictureCarousel(pictures: potentialBuddy.pictures),
                   ),
                 ),
@@ -34,7 +34,7 @@ class BuddyDetail extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       Hero(
-                        tag: 'displayNameProperty',
+                        tag: 'displayNameProperty_${potentialBuddy.id}',
                         child: Text(
                           potentialBuddy.displayName ?? '',
                           style: TextStyle(
@@ -46,7 +46,7 @@ class BuddyDetail extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Hero(
-                        tag: 'inCommon',
+                        tag: 'inCommon_${potentialBuddy.id}',
                         child: Text('Colombia, Medellín',
                             style: TextStyle(
                                 fontSize: ScreenUtil().setSp(15),
@@ -154,7 +154,7 @@ class BuddyDetail extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Hero(
-                  tag: 'matchButtons',
+                  tag: 'matchButtons_${potentialBuddy.id}',
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,

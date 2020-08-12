@@ -1,13 +1,10 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
-import 'login_with_phone_results.dart';
-
-class AuthService {
+class AuthService extends GetxService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -65,7 +62,8 @@ class AuthService {
   Future<AuthResult> loginWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
-    if (googleUser == null) throw Exception('');
+    if (googleUser == null) throw FormatException('Cancelled');
+    ;
 
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -84,7 +82,7 @@ class AuthService {
 
     switch (result.status) {
       case FacebookLoginStatus.cancelledByUser:
-        throw Exception('');
+        throw FormatException('Cancelled');
         break;
       case FacebookLoginStatus.error:
         throw FormatException(result.errorMessage);
@@ -95,5 +93,9 @@ class AuthService {
     final fbAuthCredential = FacebookAuthProvider.getCredential(
         accessToken: result.accessToken.token);
     return _auth.signInWithCredential(fbAuthCredential);
+  }
+
+  Future<AuthResult> loginAnonymously() {
+    return _auth.signInAnonymously();
   }
 }

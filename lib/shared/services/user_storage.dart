@@ -28,10 +28,17 @@ class UserStorage {
   }
 
   Future<List<String>> uploadBatchOfImagesInAssetFormat(
-      String userId, List<Asset> images) async {
+    String userId,
+    List images,
+  ) async {
     final List<String> futures = [];
 
     for (var image in images) {
+      if (image is String) {
+        futures.add(image);
+        continue;
+      }
+
       ByteData byteData = await image.getByteData();
       List<int> imageData = byteData.buffer.asUint8List();
 
@@ -41,6 +48,7 @@ class UserStorage {
 
       StorageUploadTask uploadTask = storageReference.putData(imageData);
       await uploadTask.onComplete;
+
       final String url = await storageReference.getDownloadURL();
       futures.add(url);
     }

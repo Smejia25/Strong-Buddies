@@ -15,7 +15,6 @@ class LocationService {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
-
         return null;
       }
     }
@@ -42,5 +41,20 @@ class LocationService {
     GeoFirePoint myLocation = geo.point(
         latitude: _locationData.latitude, longitude: _locationData.longitude);
     return myLocation;
+  }
+
+  Future<bool> canLocationServiceBeUsed() async {
+    final permision = await doesTheAppHasPermissions();
+    if (!permision) return false;
+    return (await _geo.serviceEnabled() || await _geo.requestService());
+  }
+
+  Future<bool> doesTheAppHasPermissions() async {
+    var permissionStatus = await _geo.hasPermission();
+
+    if (permissionStatus == PermissionStatus.DENIED)
+      permissionStatus = await _geo.requestPermission();
+
+    return permissionStatus == PermissionStatus.GRANTED;
   }
 }

@@ -14,7 +14,7 @@ class MatchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: _size,      
+      width: _size,
       height: _size,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(_size),

@@ -2,21 +2,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:strong_buddies_connect/register/pages/components/upload_pictures.dart';
+import 'package:strong_buddies_connect/register/pages/components/user_form.dart';
 import 'package:strong_buddies_connect/routes.dart';
-import 'package:strong_buddies_connect/shared/components/primary_button.dart';
-import 'package:strong_buddies_connect/shared/components/tappable_wrapper.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_notifier.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/shared/services/user_storage.dart';
-import 'package:strong_buddies_connect/shared/utils/form_util.dart';
 import 'package:strong_buddies_connect/shared/utils/list_utils.dart';
-
 import 'bloc/register_bloc.dart';
 import 'models/registration_user.dart';
 
@@ -30,6 +26,13 @@ class RegisterPageNew extends StatefulWidget {
 class _RegisterPageNewState extends State<RegisterPageNew> {
   final RegistrationUser _user = RegistrationUser();
   final auth = AuthService();
+  final _form = GlobalKey<FormState>();
+  final _bloc = RegisterBloc(
+    FirebaseMessaging(),
+    UserCollection(),
+    UserStorage(),
+  );
+
   CurrentUserNotifier userNotifier;
   bool _isEditingProfile = false;
   Loader _loader;
@@ -64,6 +67,7 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
         _user.gymMemberShip = userNotifier.user.gymMemberShip;
         _user.workoutTypes = userNotifier.user.workoutTypes;
         _user.pictures = userNotifier.user.pictures;
+        _user.id = userNotifier.user.id;
       });
     }
   }
@@ -74,31 +78,65 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
     Navigator.pushNamedAndRemoveUntil(context, Routes.loginPage, (_) => false);
   }
 
+  bool isUserValid() {
+    return _user.name != null &&
+        _user.email != null &&
+        _user.gender != null &&
+        _user.targetGender != null &&
+        _user.displayName != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: Colors.black),
+            onSelected: (_) => logOut(),
+            itemBuilder: (context) => [
+              PopupMenuItem(child: Text('Log out'), value: 'sxs'),
+            ],
+          )
+        ],
+        bottomOpacity: 0.0,
+        elevation: 0.8,
+        centerTitle: false,
         leading: _isEditingProfile
-            ? Container()
+            ? null
             : BackButton(color: Color(0xff262628), onPressed: logOut),
         brightness: Brightness.light,
         backgroundColor: Color(0xffEAEAEA),
         title: Text(
           _isEditingProfile ? 'Profile' : 'Register',
+          textAlign: TextAlign.left,
           style: TextStyle(
-              color: Color(0xff262628),
-              fontSize: ScreenUtil().setSp(17),
-              fontWeight: FontWeight.w600),
+            color: Color(0xFF262628),
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
         ),
       ),
       backgroundColor: Color(0xffF2F2F2),
+      floatingActionButton: !_isEditingProfile
+          ? null
+          : FloatingActionButton(
+              backgroundColor: Color(0xffFF8960),
+              foregroundColor: Colors.white,
+              child: Icon(Icons.check),
+              onPressed: () {
+                if (!_form.currentState.validate()) return;
+                _form.currentState.save();
+                if (!isUserValid())
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'All the fields are not filled, please fill them all and select the pictures')));
+                else
+                  _bloc.add(CreateUser(_user));
+              }),
       body: SafeArea(
-        child: BlocProvider(
-          create: (context) => RegisterBloc(
-            FirebaseMessaging(),
-            UserCollection(),
-            UserStorage(),
-          ),
+        child: BlocProvider.value(
+          value: _bloc,
           child: BlocListener<RegisterBloc, RegisterState>(
             listener: (context, state) {
               if (state is RegisterInProcess)
@@ -108,269 +146,36 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
                 Scaffold.of(context)
                     .showSnackBar(SnackBar(content: Text(state.error)));
               } else if (state is RegisterSucessful) {
-                _loader.dismissLoader();
-                userNotifier.user = _user;
-                Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text('Changes Saved')));
+                if (_isEditingProfile) {
+                  _loader.dismissLoader();
+                  userNotifier.user = _user;
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Changes Saved')));
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, Routes.matchPage, (route) => false);
+                }
               }
             },
             child: Container(
-              child: ListView(
-                children: <Widget>[
-                  UploadPictures(
-                      pictures: _user.pictures,
-                      isEditingExistingProfile: _isEditingProfile,
-                      onChanged: (assets) => _user.uploadedPictures = assets),
-                  UserForm(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    UploadPictures(
+                        pictures: _user?.pictures,
+                        isEditingExistingProfile: _isEditingProfile,
+                        onChanged: (assets) => _user.uploadedPictures = assets),
+                    UserForm(
+                      formKeyState: _form,
                       user: _user,
                       isEditingExistingProfile: _isEditingProfile,
-                      onLogOut: logOut)
-                ],
+                      onLogOut: logOut,
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class UserForm extends StatefulWidget {
-  final VoidCallback onLogOut;
-  final RegistrationUser user;
-  final bool isEditingExistingProfile;
-  const UserForm({
-    Key key,
-    this.user,
-    this.isEditingExistingProfile,
-    this.onLogOut,
-  }) : super(key: key);
-
-  @override
-  _UserFormState createState() => _UserFormState();
-}
-
-class _UserFormState extends State<UserForm> {
-  final form = GlobalKey<FormState>();
-
-  bool isUserValid() {
-    final user = widget.user;
-    return user.name != null &&
-        user.email != null &&
-        user.preferTimeWorkout != null &&
-        user.gender != null &&
-        user.gymMemberShip != null &&
-        user.targetGender != null &&
-        user.workoutTypes != null &&
-        user.displayName != null &&
-        user.uploadedPictures != null;
-  }
-
-  bool isUserValidForEdit() {
-    final user = widget.user;
-    return user.name != null &&
-        user.email != null &&
-        user.preferTimeWorkout != null &&
-        user.gender != null &&
-        user.gymMemberShip != null &&
-        user.targetGender != null &&
-        user.workoutTypes != null &&
-        user.displayName != null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        vertical: ScreenUtil().setHeight(22),
-        horizontal: ScreenUtil().setWidth(16),
-      ),
-      child: Form(
-        key: form,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            RegisterInputForm(
-              initialValue: widget.user.email,
-              hint: 'We need your email to contact you',
-              label: 'Email',
-              validator: (String value) {
-                if (value.isEmpty)
-                  return 'Please, enter your email';
-                else if (!FormUtil.isEmailValid(value))
-                  return 'Please, enter a valid email';
-                return null;
-              },
-              onSaved: (val) => widget.user.email = val,
-            ),
-            RegisterInputForm(
-              initialValue: widget.user.name,
-              hint: 'We need your name',
-              label: 'Name',
-              validator: (String value) =>
-                  value.isEmpty ? 'Please, enter your name' : null,
-              onSaved: (val) => widget.user.name = val,
-            ),
-            RegisterInputForm(
-              initialValue: widget.user.displayName,
-              hint: 'This is the name other people gonna watch',
-              label: 'Nickname',
-              validator: (String value) =>
-                  value.isEmpty ? 'Please, enter your nickname' : null,
-              onSaved: (val) => widget.user.displayName = val,
-            ),
-            RegisterInputForm(
-              initialValue: widget.user.aboutMe,
-              hint: 'Tell us about yourself',
-              label: 'About you',
-              isMultiline: true,
-              validator: (String value) =>
-                  value.isEmpty ? 'Please, give an small info about you' : null,
-              onSaved: (val) => widget.user.aboutMe = val,
-            ),
-            RegisterSelectForm(
-              hint: 'Let us know your gender',
-              previouslySelected: [widget.user.gender],
-              onChange: (List<String> selectedOptions) {
-                try {
-                  widget.user.gender = selectedOptions.first;
-                } catch (e) {
-                  widget.user.gender = null;
-                }
-              },
-              label: 'What is your gender?',
-              options: ['Woman', 'Man', 'Other'],
-            ),
-            RegisterSelectForm(
-              hint: 'What genders are you looking for?',
-              previouslySelected: widget.user.targetGender,
-              allowMultipleSelect: true,
-              onChange: (List<String> selectedOptions) {
-                widget.user.targetGender =
-                    selectedOptions.length == 0 ? null : selectedOptions;
-              },
-              label: 'Looking For',
-              options: ['Women', 'Man', 'Others'],
-            ),
-            RegisterSelectForm(
-              previouslySelected: [widget.user.preferTimeWorkout],
-              onChange: (List<String> selectedOptions) {
-                try {
-                  widget.user.preferTimeWorkout = selectedOptions.first;
-                } catch (e) {
-                  widget.user.preferTimeWorkout = null;
-                }
-              },
-              label: 'What is your favorite workout time?',
-              options: ['Morning', 'Midday', 'Night'],
-            ),
-            RegisterSelectForm(
-              previouslySelected: [widget.user.gymMemberShip],
-              onChange: (List<String> selectedOptions) {
-                try {
-                  widget.user.gymMemberShip = selectedOptions.first;
-                } catch (e) {
-                  widget.user.gymMemberShip = null;
-                }
-              },
-              label: 'Do you have a gym membership?',
-              options: ['Yes', 'No'],
-            ),
-            RegisterSelectForm(
-              allowMultipleSelect: true,
-              previouslySelected: widget.user.workoutTypes,
-              onChange: (List<String> selectedOptions) {
-                widget.user.workoutTypes =
-                    selectedOptions.length == 0 ? null : selectedOptions;
-              },
-              label: "What kind of workout you're interested on?",
-              options: [
-                "Running",
-                "Free Weights",
-                "Powerlifting",
-                "Bodybuilding",
-                "Swimming",
-                "Tennis",
-                "Soccer",
-                "Basketball",
-                "Crossfit",
-                "Golf",
-                "Gymnastics",
-                "Football",
-                "Circuit Training",
-                "Indoor Cardio",
-                "Yoga",
-                "Martial Arts",
-                "Brazilian Jiu-Jitsu",
-                "Outdoor Events",
-                "Hiking",
-                "Outdoor Biking",
-                "Spin Class",
-                "Rowing"
-              ],
-            ),
-            if (!widget.isEditingExistingProfile)
-              PrimaryButton.text(
-                  text: 'Register',
-                  onTap: () {
-                    if (!form.currentState.validate()) {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'All the fields are not filled, please fill them all and select the pictures')));
-                      return;
-                    }
-                    form.currentState.save();
-                    if (!isUserValid())
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'All the fields are not filled, please fill them all and select the pictures')));
-                    else {
-                      final bloc = BlocProvider.of<RegisterBloc>(context);
-                      bloc.add(CreateUser(widget.user));
-                    }
-                  })
-            else
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: widget.onLogOut,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          side: BorderSide(color: Color(0xffFF8960))),
-                      color: Colors.white,
-                      child: Container(
-                          child: Center(
-                            child: Text(
-                              'Log Out',
-                              style: TextStyle(color: Color(0xffFF8960)),
-                            ),
-                          ),
-                          height: ScreenUtil().setHeight(48)),
-                    ),
-                    // PrimaryButton.text(text: 'Log Out', onTap: widget.onLogOut),
-                    PrimaryButton.text(
-                        text: 'Save Changes',
-                        onTap: () {
-                          if (!form.currentState.validate()) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'All the fields are not filled, please fill them all and select the pictures')));
-                            return;
-                          }
-                          form.currentState.save();
-                          if (!isUserValidForEdit())
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'All the fields are not filled, please fill them all and select the pictures')));
-                          else {
-                            final bloc = BlocProvider.of<RegisterBloc>(context);
-                            bloc.add(CreateUser(widget.user));
-                          }
-                        })
-                  ])
-          ],
         ),
       ),
     );
@@ -405,7 +210,9 @@ class _RegisterSelectFormState extends State<RegisterSelectForm> {
   @override
   void initState() {
     super.initState();
-    selected = List.from(widget.previouslySelected);
+    try {
+      selected = List.from(widget.previouslySelected);
+    } catch (e) {}
   }
 
   @override
@@ -609,7 +416,6 @@ class _FormOptionWrapperState extends State<FormOptionWrapper> {
                   )),
             )
         ]),
-        // SizedBox(height: ScreenUtil().setHeight(2.5)),
         AnimatedSwitcher(
             duration: Duration(milliseconds: 250),
             child: helpForInput
@@ -628,167 +434,5 @@ class _FormOptionWrapperState extends State<FormOptionWrapper> {
         widget.child
       ],
     );
-  }
-}
-
-class UploadPictures extends StatefulWidget {
-  final void Function(List<Asset>) onChanged;
-  final bool isEditingExistingProfile;
-  final List<String> pictures;
-
-  const UploadPictures({
-    Key key,
-    this.onChanged,
-    this.isEditingExistingProfile,
-    this.pictures,
-  }) : super(key: key);
-
-  @override
-  _UploadPicturesState createState() => _UploadPicturesState();
-}
-
-class _UploadPicturesState extends State<UploadPictures> {
-  final List<Widget> examplePictures = turnListToWidgetList(
-    new List(6),
-    (i, _) => Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        image: DecorationImage(
-          image: AssetImage('assets/images/example-${i + 1}.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    ),
-  );
-
-  List<Asset> _picturesSelectedFromGallery = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: ScreenUtil().setWidth(16),
-                vertical: ScreenUtil().setWidth(16),
-              ),
-              child: Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                child: Stack(
-                  children: <Widget>[
-                    StaggeredGridView.count(
-                      crossAxisSpacing: ScreenUtil().setWidth(12),
-                      mainAxisSpacing: ScreenUtil().setHeight(12),
-                      crossAxisCount: 3,
-                      primary: false,
-                      staggeredTiles: [
-                        const StaggeredTile.count(2, 2),
-                        const StaggeredTile.count(1, 1),
-                        const StaggeredTile.count(1, 1),
-                        const StaggeredTile.count(1, 1),
-                        const StaggeredTile.count(1, 1),
-                        const StaggeredTile.count(1, 1),
-                      ],
-                      children: getPicturesToShow(),
-                    ),
-                    TappableWrapper(
-                      onTap: () async {
-                        try {
-                          final pictures = await MultiImagePicker.pickImages(
-                            maxImages: 6,
-                            enableCamera: true,
-                          );
-                          setState(
-                              () => _picturesSelectedFromGallery = pictures);
-                          widget.onChanged(_picturesSelectedFromGallery);
-                        } catch (e) {
-                          print(e);
-                        }
-                      },
-                      child: (_picturesSelectedFromGallery != null &&
-                                  _picturesSelectedFromGallery.isNotEmpty) ||
-                              widget.isEditingExistingProfile
-                          ? Container()
-                          : Container(
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    FaIcon(
-                                      FontAwesomeIcons.camera,
-                                      size: ScreenUtil().setSp(36),
-                                      color: Color(0xff545455),
-                                    ),
-                                    SizedBox(
-                                        height: ScreenUtil().setHeight(14)),
-                                    Text(
-                                      'Upload Your\nPictures',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Color(0xff545455),
-                                        fontSize: ScreenUtil().setSp(23),
-                                        height: 1.2,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(242, 242, 242, 0.9),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        FractionallySizedBox(
-          widthFactor: 0.85,
-          child: Text(
-            'You can upload up to 6 pictures. Tap the pictures if you want to select different ones',
-            style: TextStyle(
-                fontSize: ScreenUtil().setSp(15),
-                height: 1.35,
-                color: Color(0xff545455),
-                letterSpacing: -0.45),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        SizedBox(height: ScreenUtil().setHeight(15)),
-      ],
-    );
-  }
-
-  List<Widget> getPicturesToShow() {
-    if (_picturesSelectedFromGallery != null &&
-        _picturesSelectedFromGallery.isNotEmpty)
-      return _picturesSelectedFromGallery
-          .map(
-            (e) => ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: AssetThumb(
-                quality: 100,
-                asset: e,
-                height: 100,
-                width: 100,
-              ),
-            ),
-          )
-          .toList();
-    else if (widget.pictures != null)
-      return widget.pictures
-          .map((e) => Image.network(e, fit: BoxFit.cover))
-          .toList();
-    else
-      return examplePictures;
   }
 }

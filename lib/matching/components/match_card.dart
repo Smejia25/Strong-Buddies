@@ -22,29 +22,26 @@ class MatchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(13),
-        ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(13),
-                  topRight: Radius.circular(13),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+        child: Stack(
+          // fit: StackFit.passthrough,
+          children: [
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(13),
+                        topRight: Radius.circular(13)),
+                    child: Hero(
+                      tag: 'images_${potentialMatch.id}',
+                      child: PictureCarousel(pictures: potentialMatch.pictures),
+                    ),
+                  ),
                 ),
-                child: Hero(
-                  tag: 'images',
-                  child: PictureCarousel(pictures: potentialMatch.pictures),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: ScreenUtil().setHeight(113.3),
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Column(
+                SizedBox(
+                  height: ScreenUtil().setHeight(115),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       GestureDetector(
@@ -65,7 +62,7 @@ class MatchCard extends StatelessWidget {
                             }
                           },
                           child: Hero(
-                            tag: 'displayNameProperty',
+                            tag: 'displayNameProperty_${potentialMatch.id}',
                             child: Text(
                               potentialMatch.displayName ?? '',
                               style: TextStyle(
@@ -77,7 +74,7 @@ class MatchCard extends StatelessWidget {
                           )),
                       SizedBox(height: ScreenUtil().setHeight(6)),
                       Hero(
-                        tag: 'inCommon',
+                        tag: 'inCommon_${potentialMatch.id}',
                         child: Text('Colombia, Medellín',
                             style: TextStyle(
                                 fontSize: ScreenUtil().setSp(15),
@@ -87,37 +84,37 @@ class MatchCard extends StatelessWidget {
                       SizedBox(height: ScreenUtil().setHeight(20)),
                     ],
                   ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Transform.translate(
-                      offset: Offset(0, -30),
-                      child: Hero(
-                        tag: 'matchButtons',
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            MatchButton(
-                              onPressed: () => onReject(potentialMatch),
-                              icon: Icon(
-                                Icons.close,
-                                color: Color(0xffC1C0C9),
-                              ),
-                            ),
-                            SizedBox(width: ScreenUtil().setWidth(30)),
-                            MatchButton(
-                              onPressed: () => onMatch(potentialMatch),
-                              icon: Icon(
-                                Icons.favorite,
-                                color: Color(0xffFF8960),
-                              ),
-                            ),
-                          ],
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Transform.translate(
+                offset: Offset(0, -ScreenUtil().setHeight(115) + 30),
+                child: Hero(
+                  tag: 'matchButtons_${potentialMatch.id}',
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      MatchButton(
+                        onPressed: () => onReject(potentialMatch),
+                        icon: Icon(
+                          Icons.close,
+                          color: Color(0xffC1C0C9),
                         ),
                       ),
-                    ),
+                      SizedBox(width: ScreenUtil().setWidth(30)),
+                      MatchButton(
+                        onPressed: () => onMatch(potentialMatch),
+                        icon: Icon(
+                          Icons.favorite,
+                          color: Color(0xffFF8960),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -143,17 +140,19 @@ class _PictureCarouselState extends State<PictureCarousel> {
 
   @override
   void initState() {
-    super.initState();
     if (widget.pictures != null)
       images = widget.pictures
-          .map((e) => Image.network(e, fit: BoxFit.cover))
+          .map((picture) => Image.network(picture, fit: BoxFit.cover))
           .toList();
+    super.initState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    images.forEach((element) => precacheImage(element.image, context));
+    try {
+      images.forEach((element) => precacheImage(element.image, context));
+    } catch (e) {}
   }
 
   @override
@@ -162,6 +161,7 @@ class _PictureCarouselState extends State<PictureCarousel> {
       fit: StackFit.expand,
       children: <Widget>[
         PageView.builder(
+          physics: AlwaysScrollableScrollPhysics(),
           onPageChanged: (index) => setState(() => imageBeingShown = index),
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) =>

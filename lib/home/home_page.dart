@@ -3,11 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:strong_buddies_connect/chatList/chatList.dart';
 import 'package:strong_buddies_connect/matching/matching_page.dart';
-import 'package:strong_buddies_connect/profile/profile_page.dart';
 import 'package:strong_buddies_connect/register/pages/newRegister/register_page.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_notifier.dart';
-import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
+import 'package:strong_buddies_connect/shared/services/loader_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,11 +18,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int current = 0;
-  final widgets = [MatchComponent(), ChatList(), RegisterPageNew()];
+  Loader loading;
+
+  bool loaded = false;
+
+  final widgets = [
+    MatchComponent(),
+    ChatList(),
+    RegisterPageNew(),
+  ];
 
   @override
   void initState() {
     super.initState();
+    loading = Loader(context);
+    loading.showLoader();
     setCurrentUser();
   }
 
@@ -35,7 +44,10 @@ class _HomePageState extends State<HomePage> {
       final userNotifier =
           Provider.of<CurrentUserNotifier>(context, listen: false);
       userNotifier.user = userInfo;
-      setState(() {});
+      setState(() {
+        loaded = true;
+      });
+      loading.dismissLoader();
     });
   }
 
@@ -83,6 +95,8 @@ class _HomePageState extends State<HomePage> {
                     size: 27,
                   )),
             ]),
-        body: IndexedStack(index: current, children: widgets));
+        body: !loaded
+            ? Container()
+            : IndexedStack(index: current, children: widgets));
   }
 }

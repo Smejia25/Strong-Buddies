@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:equatable/equatable.dart';
-import 'package:strong_buddies_connect/matching/models/matched_buddy_pojo.dart';
+
 import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 
@@ -47,23 +47,21 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
         if (_buddies.length == 0)
           yield OutOfBuddies();
         else
-          yield BuddyLoaded(_buddies[_init], currentUser);
+          yield BuddyLoaded(_buddies, currentUser);
       } catch (e) {
         print(e);
+        yield OutOfBuddies();
       }
     } else {
       if (event is MatchWithBuddy)
         await userCollection.setBuddyInTheRejectionList(
-            currentUser.id, _buddies[_init].id, true);
-      else
+            currentUser.id, event.buddy.id, true);
+      else if ((event is RejectBuddy))
         await userCollection.setBuddyInTheRejectionList(
-            currentUser.id, _buddies[_init].id, false);
+            currentUser.id, event.buddy.id, false);
 
       _init++;
-      if (_init >= _buddies.length)
-        yield OutOfBuddies();
-      else
-        yield BuddyLoaded(_buddies[_init], currentUser);
+      if (_init >= _buddies.length) yield OutOfBuddies();
     }
   }
 }

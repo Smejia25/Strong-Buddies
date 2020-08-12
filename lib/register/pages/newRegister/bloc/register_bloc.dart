@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:strong_buddies_connect/register/pages/newRegister/models/registration_user.dart';
-import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 import 'package:strong_buddies_connect/shared/services/user_storage.dart';
 
@@ -36,7 +35,6 @@ class RegisterBloc extends Bloc<CreateUser, RegisterState> {
       if (user.uploadedPictures != null) {
         final urlOfUploadedPics = await _userStorage
             .uploadBatchOfImagesInAssetFormat(user.id, user.uploadedPictures);
-
         await _userCollection.updateUserPictures(user.id, urlOfUploadedPics, 0);
       }
 

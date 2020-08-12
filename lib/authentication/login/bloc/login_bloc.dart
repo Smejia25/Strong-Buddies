@@ -30,7 +30,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     Future<AuthResult> loginPromise = _getLoginType(event);
     if (loginPromise == null) return;
-
     try {
       yield PerformingLoading();
       final userResult = await loginPromise;
@@ -57,10 +56,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Future<AuthResult> _getLoginType(LoginEvent event) {
-    if (event is PerformLoginWithGoogle)
+    if (event is PerformLoginWithGoogle) {
       return _auth.loginWithGoogle();
-    else if (event is PerformLoginWithFacebook)
+    } else if (event is PerformLoginWithFacebook) {
       return _auth.loginWithFacebook();
+    } else if (event is PerformAnonymousLogin) {
+      return _auth.loginAnonymously();
+    }
     return null;
   }
 }

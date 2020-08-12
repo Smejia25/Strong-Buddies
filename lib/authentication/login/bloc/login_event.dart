@@ -19,6 +19,11 @@ class PerformLoginWithGoogle extends LoginEvent {
   List<Object> get props => [];
 }
 
+class PerformAnonymousLogin extends LoginEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class PerformLoginWithFacebook extends LoginEvent {
   @override
   List<Object> get props => [];

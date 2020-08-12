@@ -10,13 +10,13 @@ class MatchingInitial extends MatchingState {
 }
 
 class BuddyLoaded extends MatchingState {
-  final Buddy buddy;
+  final List<Buddy> buddies;
   final CurrentUser currentUser;
 
-  const BuddyLoaded(this.buddy, this.currentUser);
+  const BuddyLoaded(this.buddies, this.currentUser);
 
   @override
-  List<Object> get props => [buddy];
+  List<Object> get props => [buddies];
 }
 
 class OutOfBuddies extends MatchingState {
