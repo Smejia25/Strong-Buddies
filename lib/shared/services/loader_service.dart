@@ -11,6 +11,6 @@ class Loader {
   }
 
   void dismissLoader() {
-    return _pr.dismiss();
+    _pr.hide();
   }
 }

@@ -17,6 +17,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'shared/models/current_user_notifier.dart';
 import 'shared/utils/navigation_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:location/location.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 import 'dart:async';
 
@@ -36,7 +38,12 @@ Future<Map<String, Object>> handleInitialConfig() async {
 
 Future<void> askToTurnOnGps() async {
   final location = LocationService();
-  return location.handlePermissions();
+  final auth = AuthService();
+  final userRepository = UserCollection();
+  final _locationData = await location.getPermissions();
+  final user = await auth.getCurrentUser();
+  if (user != null)
+    await userRepository.updateLocation(user.uid, _locationData.data);
 }
 
 Future<Map<String, Object>> getInitialPage() async {
@@ -57,13 +64,13 @@ class MyApp extends StatefulWidget {
   final String startPage;
   final CurrentUser user;
   const MyApp({startPage: '/', this.user}) : this.startPage = startPage;
-
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  LocationData currentLocation;
 
   @override
   void initState() {
@@ -88,7 +95,6 @@ class _MyAppState extends State<MyApp> {
     }, onResume: (Map<String, dynamic> message) async {
       Navigator.pushNamed(context, Routes.chatListPage);
     });
-
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
             sound: true, badge: true, alert: true, provisional: true));

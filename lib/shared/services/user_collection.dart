@@ -5,16 +5,23 @@ import 'package:strong_buddies_connect/matching/models/matched_buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/buddy_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/current_user_pojo.dart';
 import 'package:strong_buddies_connect/shared/models/match_model.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:strong_buddies_connect/shared/services/location_service.dart';
 
 class UserCollection {
   final Firestore _firestoreInstance = Firestore.instance;
   final String _collection = 'users';
+  final Geoflutterfire geo = Geoflutterfire();
+  final LocationService locationService = LocationService();
   CurrentUser currentUserInfo;
 
   Future<void> setUserInfo(CurrentUser user) async {
+    final GeoFirePoint locationData =
+        await locationService.getCurrentLocation();
     final document =
         _firestoreInstance.collection(_collection).document(user.id);
     await document.setData(user.publicInfotoJson(), merge: true);
+    await updateLocation(user.id, locationData);
     await document
         .collection('private_info')
         .document('private')
@@ -77,13 +84,33 @@ class UserCollection {
         merge: true);
   }
 
+  Future<void> updateLocation(String userId, location) {
+    return _firestoreInstance
+        .collection(_collection)
+        .document(userId)
+        .setData({'position': location}, merge: true);
+  }
+
   Future<List<Buddy>> getBuddies() async {
-    return (await _firestoreInstance.collection(_collection).getDocuments())
-        .documents
+    var collectionReference = _firestoreInstance.collection(_collection);
+    var geoRef = geo.collection(collectionRef: collectionReference);
+
+    final GeoFirePoint centerGeoPoint =
+        await locationService.getCurrentLocation();
+   print(centerGeoPoint.latitude);
+    var buddies = (await geoRef
+            .within(
+                center: centerGeoPoint,
+                radius: 50,
+                field: 'position',
+                strictMode: true)
+            .first)
         .where((doc) => doc.exists)
         .map((document) =>
             Buddy.fromJson(document.data)..id = document.documentID)
         .toList();
+    print(buddies.length);
+    return buddies;
   }
 
   Future<List<String>> getAlreadyAnalizedBuddies(String userId) async {
