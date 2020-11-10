@@ -21,7 +21,7 @@ import 'shared/models/current_user_notifier.dart';
 import 'shared/utils/navigation_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:location/location.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
+// import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 

@@ -4,7 +4,7 @@ import 'package:strong_buddies_connect/shared/models/match_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
-import 'package:strong_buddies_connect/shared/models/match_model.dart';
+
 part 'chatlist_event.dart';
 part 'chatlist_state.dart';
 

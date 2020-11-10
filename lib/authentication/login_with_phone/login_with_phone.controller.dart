@@ -14,6 +14,7 @@ class LoginWithPhoneController extends GetxController {
 
   @override
   onInit() async {
+    super.onInit();
     _countries = await _repository.getCountryCodes();
     _filteredList.value = _countries;
     _getCountryCodeBasedInCountryCode();

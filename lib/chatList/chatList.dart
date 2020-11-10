@@ -4,18 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strong_buddies_connect/authentication/login/login_page.dart';
-import 'package:strong_buddies_connect/chat/chat.dart';
+
 import 'package:strong_buddies_connect/chat/const.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:strong_buddies_connect/chatList/bloc/chatlist_bloc.dart';
 import 'package:strong_buddies_connect/chatList/components/buildChatItem.dart';
 import 'package:strong_buddies_connect/chatList/components/buildContact.dart';
-import 'package:strong_buddies_connect/shared/components/circle_image.dart';
-import 'package:strong_buddies_connect/shared/components/status_circle.dart';
+
 import 'package:strong_buddies_connect/shared/services/auth/auth_service.dart';
 import 'package:strong_buddies_connect/shared/services/user_collection.dart';
 
@@ -59,10 +58,6 @@ class ChatListState extends State<ChatList> {
   _printLatestValue() {
     print("Second text field: ${textEditingController.text}");
     _bloc.add(UpdateFilter(textEditingController.text));
-  }
-
-  Future<bool> onBackPress() {
-    // return Future.value(false);
   }
 
   Future<Null> handleSignOut() async {

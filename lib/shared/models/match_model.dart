@@ -1,4 +1,3 @@
-import 'package:strong_buddies_connect/shared/utils/models_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Match {

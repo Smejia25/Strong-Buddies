@@ -63,7 +63,6 @@ class AuthService extends GetxService {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
     if (googleUser == null) throw FormatException('Cancelled');
-    ;
 
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;

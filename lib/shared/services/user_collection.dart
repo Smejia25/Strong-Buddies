@@ -152,16 +152,6 @@ class UserCollection {
     });
   }
 
-  Future<bool> doesTheUserExistInTheDataBase(String email) async {
-    /* final user = await getUser('dcNYpK545cxIA35iVjkb');
-    return user != null; */
-  }
-
-  Future<bool> doesTheUserHavePictures(String email) async {
-    /* final user = await getUser(email);
-    return user.pictures != null; */
-  }
-
   Future<void> setBuddyInTheRejectionList(
     String currentUserId,
     String buddyId,

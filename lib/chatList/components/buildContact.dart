@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:strong_buddies_connect/chat/chat.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:strong_buddies_connect/shared/components/circle_image.dart';
 import 'package:strong_buddies_connect/shared/components/status_circle.dart';
 import 'package:strong_buddies_connect/shared/models/match_model.dart';
