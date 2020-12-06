@@ -83,11 +83,11 @@ class UserCollection {
         merge: true);
   }
 
-  Future<void> updateLocation(String userId, location) {
+  Future<void> updateLocation(String userId, GeoFirePoint location) {
     return _firestoreInstance
         .collection(_collection)
         .document(userId)
-        .setData({'position': location}, merge: true);
+        .setData({'position': location.data}, merge: true);
   }
 
   Future<List<Buddy>> getBuddies() async {
