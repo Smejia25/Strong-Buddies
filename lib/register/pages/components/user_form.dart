@@ -42,11 +42,8 @@ class _UserFormState extends State<UserForm> {
     final user = widget.user;
     return user.name != null &&
         user.email != null &&
-        // user.preferTimeWorkout != null &&
         user.gender != null &&
-        // user.gymMemberShip != null &&
         user.targetGender != null &&
-        // user.workoutTypes != null &&
         user.displayName != null;
   }
 
@@ -64,6 +61,7 @@ class _UserFormState extends State<UserForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             RegisterInputForm(
+              keyboardType: TextInputType.emailAddress,
               initialValue: widget.user.email,
               hint: 'We need your email to contact you',
               label: 'Email',
@@ -87,7 +85,7 @@ class _UserFormState extends State<UserForm> {
             RegisterInputForm(
               initialValue: widget.user.displayName,
               hint: 'This is the name other people gonna watch',
-              label: 'Nickname',
+              label: 'Username',
               validator: (String value) =>
                   value.isEmpty ? 'Please, enter your nickname' : null,
               onSaved: (val) => widget.user.displayName = val,
@@ -121,19 +119,15 @@ class _UserFormState extends State<UserForm> {
                 widget.user.targetGender =
                     selectedOptions.length == 0 ? null : selectedOptions;
               },
-              label: 'Looking For',
+              label: 'Workout Buddy Gender Preference',
               options: ['Women', 'Man', 'Others'],
             ),
             RegisterSelectForm(
-              previouslySelected: widget.user.preferTimeWorkout != null
-                  ? [widget.user.preferTimeWorkout]
-                  : [],
+              allowMultipleSelect: true,
+              previouslySelected: widget.user.preferTimeWorkout,
               onChange: (List<String> selectedOptions) {
-                try {
-                  widget.user.preferTimeWorkout = selectedOptions.first;
-                } catch (e) {
-                  widget.user.preferTimeWorkout = null;
-                }
+                widget.user.preferTimeWorkout =
+                    selectedOptions.length == 0 ? null : selectedOptions;
               },
               label: 'What is your favorite workout time? (Optional)',
               options: ['Morning', 'Midday', 'Night'],
@@ -182,7 +176,8 @@ class _UserFormState extends State<UserForm> {
                 "Hiking",
                 "Outdoor Biking",
                 "Spin Class",
-                "Rowing"
+                "Rowing",
+                "Sprint Lifting"
               ],
             ),
             if (!widget.isEditingExistingProfile)
@@ -205,47 +200,6 @@ class _UserFormState extends State<UserForm> {
                       bloc.add(CreateUser(widget.user));
                     }
                   })
-            /*  else
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: widget.onLogOut,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          side: BorderSide(color: Color(0xffFF8960))),
-                      color: Colors.white,
-                      child: Container(
-                          child: Center(
-                            child: Text(
-                              'Log Out',
-                              style: TextStyle(color: Color(0xffFF8960)),
-                            ),
-                          ),
-                          height: ScreenUtil().setHeight(48)),
-                    ),
-                    // PrimaryButton.text(text: 'Log Out', onTap: widget.onLogOut),
-                    PrimaryButton.text(
-                        text: 'Save Changes',
-                        onTap: () {
-                          if (!form.currentState.validate()) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'All the fields are not filled, please fill them all and select the pictures')));
-                            return;
-                          }
-                          form.currentState.save();
-                          if (!isUserValidForEdit())
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'All the fields are not filled, please fill them all and select the pictures')));
-                          else {
-                            final bloc = BlocProvider.of<RegisterBloc>(context);
-                            bloc.add(CreateUser(widget.user));
-                          }
-                        })
-                  ])
-           */
           ],
         ),
       ),

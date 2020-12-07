@@ -48,6 +48,6 @@ class LoginController extends GetxController {
   }
 
   void loginWithFacebook() {
-    this.performLoginProcess(() => _auth.loginWithGoogle());
+    this.performLoginProcess(() => _auth.loginWithFacebook());
   }
 }

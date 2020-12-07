@@ -4,7 +4,7 @@ class Buddy {
   String id;
   String _gender;
   String _displayName;
-  String _preferTimeWorkout;
+  List<String> preferTimeWorkout;
   String _gymMemberShip;
   List<String> _pictures;
   List<String> _workoutTypes;
@@ -15,14 +15,14 @@ class Buddy {
     String id,
     String gender,
     String displayName,
-    String preferTimeWorkout,
+    List<String> preferTimeWorkout,
     String gymMemberShip,
     List<String> pictures,
     List<String> workoutTypes,
   }) {
     this._gender = gender;
     this._displayName = displayName;
-    this._preferTimeWorkout = preferTimeWorkout;
+    this.preferTimeWorkout = preferTimeWorkout;
     this._gymMemberShip = gymMemberShip;
     this._pictures = pictures;
     this._workoutTypes = workoutTypes;
@@ -34,10 +34,6 @@ class Buddy {
 
   String get displayName => _displayName;
   set displayName(String displayName) => _displayName = displayName;
-
-  String get preferTimeWorkout => _preferTimeWorkout;
-  set preferTimeWorkout(String preferTimeWorkout) =>
-      _preferTimeWorkout = preferTimeWorkout;
 
   String get gymMemberShip => _gymMemberShip;
   set gymMemberShip(String gymMemberShip) => _gymMemberShip = gymMemberShip;
@@ -54,10 +50,11 @@ class Buddy {
   Buddy.fromJson(Map<String, dynamic> json) {
     _gender = json['gender'];
     _displayName = json['displayName'];
-    _preferTimeWorkout = json['preferTimeWorkout'];
     _gymMemberShip = json['gymMemberShip'];
     _pictures = castJsonPropertyToListToList<String>(json, 'pictures');
     _workoutTypes = castJsonPropertyToListToList<String>(json, 'workoutTypes');
+    preferTimeWorkout =
+        castJsonPropertyToListToList<String>(json, 'preferTimeWorkout');
     _photoUrl = json['photoUrl'];
     aboutMe = json['aboutMe'];
   }
@@ -66,7 +63,7 @@ class Buddy {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['gender'] = this._gender;
     data['displayName'] = this._displayName;
-    data['preferTimeWorkout'] = this._preferTimeWorkout;
+    data['preferTimeWorkout'] = this.preferTimeWorkout;
     data['gymMemberShip'] = this._gymMemberShip;
     data['pictures'] = this._pictures;
     data['workoutTypes'] = this._workoutTypes;

@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:strong_buddies_connect/home/home_page.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/components/matchDialog.dart';
@@ -129,9 +129,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 375, height: 812, allowFontScaling: true);
-    return MultiProvider(
+    return provider.MultiProvider(
       providers: [
-        ChangeNotifierProvider<CurrentUserNotifier>(
+        provider.ChangeNotifierProvider<CurrentUserNotifier>(
             create: (_) => CurrentUserNotifier(widget.user))
       ],
       child: MaterialApp(

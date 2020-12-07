@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:strong_buddies_connect/register/pages/components/upload_pictures.dart';
 import 'package:strong_buddies_connect/register/pages/components/user_form.dart';
 import 'package:strong_buddies_connect/routes.dart';
@@ -45,7 +45,8 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
   }
 
   void setUserInfo() {
-    userNotifier = Provider.of<CurrentUserNotifier>(context, listen: false);
+    userNotifier =
+        provider.Provider.of<CurrentUserNotifier>(context, listen: false);
     if (userNotifier.user == null)
       auth.getCurrentUser().then((user) {
         setState(() {

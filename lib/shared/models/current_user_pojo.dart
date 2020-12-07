@@ -25,8 +25,9 @@ class CurrentUser extends Buddy {
   CurrentUser.fromPublicJson(Map<String, dynamic> json) {
     gender = json['gender'];
     displayName = json['displayName'];
-    preferTimeWorkout = json['preferTimeWorkout'];
     gymMemberShip = json['gymMemberShip'];
+    preferTimeWorkout =
+        castJsonPropertyToListToList<String>(json, 'preferTimeWorkout');
     pictures = castJsonPropertyToListToList<String>(json, 'pictures');
     workoutTypes = castJsonPropertyToListToList(json, 'workoutTypes');
     photoUrl = json['photoUrl'];
