@@ -6,9 +6,12 @@ import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/components/primary_button.dart';
 import 'login_controller.dart';
 import 'components/facebook_button.dart';
+import 'components/apple_button.dart';
+
 import 'components/login_container.dart';
 import 'components/logo.dart';
 import 'components/terms_conditions.dart';
+import 'dart:io' show Platform;
 
 class LoginPage extends StatelessWidget {
   @override
@@ -41,11 +44,14 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: ScreenUtil().setHeight(20)),
-              Obx(() => FacebookButton(
+              /*  Obx(() => FacebookButton(
                   loginInProgress: controller.performingLoading.value)),
-              SizedBox(height: ScreenUtil().setHeight(20)),
-              Obx(() => GoogleButton(
-                  loginInProgress: controller.performingLoading.value)),
+              SizedBox(height: ScreenUtil().setHeight(20)), */
+              Obx(() => Platform.isIOS
+                  ? AppleButton(
+                      loginInProgress: controller.performingLoading.value)
+                  : GoogleButton(
+                      loginInProgress: controller.performingLoading.value)),
               SizedBox(height: ScreenUtil().setHeight(56)),
               const TermsAndConditions()
             ],

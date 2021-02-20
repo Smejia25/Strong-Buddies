@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/state_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
 
 class AuthService extends GetxService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -96,5 +97,36 @@ class AuthService extends GetxService {
 
   Future<AuthResult> loginAnonymously() {
     return _auth.signInAnonymously();
+  }
+
+  static Future<bool> appleSignInAvailable() async {
+    return AppleSignIn.isAvailable();
+  }
+
+  Future<AuthResult> logInWithApple() async {
+    // 1. perform the sign-in request
+    final result = await AppleSignIn.performRequests([
+      AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+    ]);
+    final appleIdCredential = result.credential;
+    final oAuthProvider = OAuthProvider(providerId: 'apple.com');
+    final credential = oAuthProvider.getCredential(
+      idToken: String.fromCharCodes(appleIdCredential.identityToken),
+      accessToken: String.fromCharCodes(appleIdCredential.authorizationCode),
+    );
+    print(result.status);
+    return _auth.signInWithCredential(credential);
+
+    // 2. check the result
+    switch (result.status) {
+      case AuthorizationStatus.error:
+        throw FormatException(result.error.toString());
+
+      case AuthorizationStatus.cancelled:
+        throw FormatException('Cancelled');
+        break;
+      default:
+        break;
+    }
   }
 }

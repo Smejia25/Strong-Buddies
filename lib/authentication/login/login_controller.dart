@@ -25,6 +25,7 @@ class LoginController extends GetxController {
     } on FormatException catch (e) {
       if (e.message != 'Cancelled') onFailedLogin(e.message);
     } catch (e) {
+      print(e);
       onFailedLogin('There was a mistake, please try later');
     }
     performingLoading.value = false;
@@ -49,5 +50,9 @@ class LoginController extends GetxController {
 
   void loginWithFacebook() {
     this.performLoginProcess(() => _auth.loginWithFacebook());
+  }
+
+  void loginWithApple() {
+    this.performLoginProcess(() => _auth.logInWithApple());
   }
 }

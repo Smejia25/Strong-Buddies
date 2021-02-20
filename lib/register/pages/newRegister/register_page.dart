@@ -109,7 +109,7 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
         brightness: Brightness.light,
         backgroundColor: Color(0xffEAEAEA),
         title: Text(
-          _isEditingProfile ? 'Profile' : 'Register',
+          _isEditingProfile ? 'Profile Info' : 'Complete your info',
           textAlign: TextAlign.left,
           style: TextStyle(
             color: Color(0xFF262628),

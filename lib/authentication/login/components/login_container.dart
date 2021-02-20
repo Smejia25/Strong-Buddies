@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+final List<String> imgList = [
+  'assets/images/background-login.jpg',
+  'assets/images/background-login-2.jpg',
+  'assets/images/background-login-3.jpg',
+  'assets/images/background-login-4.jpg',
+];
 
 class LoginContainer extends StatelessWidget {
   const LoginContainer({
@@ -14,9 +22,28 @@ class LoginContainer extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Image.asset(
-            'assets/images/background-login.jpg',
-            fit: BoxFit.cover,
+          Builder(
+            builder: (context) {
+              final double height = MediaQuery.of(context).size.height;
+              return CarouselSlider(
+                options: CarouselOptions(
+                  height: height,
+                  viewportFraction: 1.0,
+                  enlargeCenterPage: false,
+                  autoPlay: true,
+                ),
+                items: imgList
+                    .map((item) => Container(
+                          child: Center(
+                              child: Image.asset(
+                            item,
+                            fit: BoxFit.cover,
+                            height: height,
+                          )),
+                        ))
+                    .toList(),
+              );
+            },
           ),
           Container(
             decoration: BoxDecoration(
