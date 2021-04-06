@@ -74,9 +74,10 @@ class _RegisterPageNewState extends State<RegisterPageNew> {
   }
 
   void logOut() async {
-    await auth.singOut();
     userNotifier.user = null;
-    Navigator.pushNamedAndRemoveUntil(context, Routes.loginPage, (_) => false);
+    auth.preLogOut(true);
+    Navigator.pushNamedAndRemoveUntil(
+        context, Routes.reLoginPage, (_) => false);
   }
 
   bool isUserValid() {

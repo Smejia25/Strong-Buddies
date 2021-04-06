@@ -23,7 +23,11 @@ Widget buildContact(BuildContext context, Match match) {
               Container(
                   margin: const EdgeInsets.only(bottom: 5.0),
                   child: CircleImage(
-                      heigth: 50.0, width: 50.0, imageUrl: match.photoUrl)),
+                    heigth: 50.0,
+                    width: 50.0,
+                    imageUrl: match.photoUrl,
+                    radius: 25,
+                  )),
               Positioned(
                   bottom: 8,
                   left: 40,

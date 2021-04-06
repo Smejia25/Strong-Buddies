@@ -45,6 +45,7 @@ dependencies:
   get: ^3.12.1
   apple_sign_in: ^0.1.0
   carousel_slider: ^3.0.0
+  shared_preferences: ^0.5.8
 
 dev_dependencies:
   flutter_test:

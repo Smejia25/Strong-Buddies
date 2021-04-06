@@ -5,4 +5,5 @@ class Routes {
   static final registerPage = '/registerPage';
   static final buddyProfile = '/buddyProfile';
   static final chatListPage = '/chatListPage';
+  static final reLoginPage = '/reLoginPage';
 }

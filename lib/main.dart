@@ -3,6 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strong_buddies_connect/authentication/re-login/re-login.dart';
 import 'package:strong_buddies_connect/home/home_page.dart';
 import 'package:strong_buddies_connect/routes.dart';
 import 'package:strong_buddies_connect/shared/components/matchDialog.dart';
@@ -74,6 +76,10 @@ Future<Map<String, Object>> getInitialPage() async {
   final auth = AuthService();
   final userRepository = UserCollection();
   final user = await auth.getCurrentUser();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final isPrelogedOut = prefs.getBool('isPreLoggedOut') ?? false;
+
+  if (isPrelogedOut) return {'route': Routes.reLoginPage};
 
   if (user == null) return {'route': Routes.loginPage};
 
@@ -143,7 +149,8 @@ class _MyAppState extends State<MyApp> {
                 LoginWithPhoneNumberPage(),
             Routes.registerPage: (context) => RegisterPageNew(),
             Routes.chatListPage: (context) => ChatList(),
-            Routes.buddyProfile: (context) => BuddyDetail()
+            Routes.buddyProfile: (context) => BuddyDetail(),
+            Routes.reLoginPage: (context) => ReLoginPage()
           },
           theme: buildAppTheme()),
     );

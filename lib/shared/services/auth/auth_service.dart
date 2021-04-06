@@ -4,10 +4,17 @@ import 'package:get/state_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends GetxService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> preLogOut(bool isPreLoggedOut) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool("isPreLoggedOut", isPreLoggedOut).then((bool success) {});
+  }
 
   Future<FirebaseUser> getCurrentUser() {
     return _auth.currentUser();

@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
                   loginInProgress: controller.performingLoading.value)),
               SizedBox(height: ScreenUtil().setHeight(20)), */
               Obx(() => Platform.isIOS
-                  ? AppleButton(
+                  ? GoogleButton(
                       loginInProgress: controller.performingLoading.value)
                   : GoogleButton(
                       loginInProgress: controller.performingLoading.value)),
