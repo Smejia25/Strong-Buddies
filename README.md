@@ -1,16 +1,15 @@
-# strong_buddies_connect
+# Strong Buddies
+Flutter/firebase concept project
 
-A new Flutter project.
+Workout with people with the same workout/lifestyle interest around you
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Install flutter-sdk / dart
 
-A few resources to get you started if this is your first Flutter project:
+run
+pub get && flutter run
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
+For help getting started with Flutter, =>
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
