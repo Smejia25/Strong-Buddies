@@ -1,7 +1,7 @@
 # Strong Buddies
 Flutter/firebase concept project
 
-Workout with people with the same workout/lifestyle interest around you and chat with them
+Workout with people with the same workout/lifestyle interests around you and chat with them
 
 ## Getting Started
 
